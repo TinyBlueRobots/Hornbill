@@ -8,20 +8,31 @@ open System.Collections.Generic
 
 type Response = 
   private
-  | Response of statusCode : int * body : string option
-  static member Create(statusCode, body) = Response(statusCode, Some body)
-  static member Create(statusCode) = Response(statusCode, None)
+  | Text of body : string
+  | Code of statusCode : int
+  | Full of statusCode : int * headers : KeyValuePair<string, string> seq * body : string
+  | Raw of httpResponse : string
+
+  static member CreateText(body) = Text(body)
+  static member CreateCode(statusCode) = Code(statusCode)
+  static member CreateFull(statusCode, headers, body) = Full(statusCode, headers, body)
+  static member CreateRaw(httpResponse) = Raw(httpResponse)
 
 module private Middleware = 
   let task = Task.Delay 0
   
   let handler (responses : Dictionary<string, Response>) (ctx : IOwinContext) = 
     match responses.[ctx.Request.Path.Value] with
-    | Response(statusCode, Some body) -> 
-      ctx.Response.StatusCode <- statusCode
+    | Text(body) -> 
       ctx.Response.WriteAsync body
-    | Response(statusCode, None) -> 
+    | Code(statusCode) -> 
       ctx.Response.StatusCode <- statusCode
+      task
+    | Full(statusCode, headers, body) -> 
+      ctx.Response.StatusCode <- statusCode
+      headers |> Seq.iter (fun header -> ctx.Response.Headers.Add(header.Key, [| header.Value |]))      
+      ctx.Response.WriteAsync body
+    | Raw(httpResponse) -> 
       task
   
   let app responses (app : IAppBuilder) = Func<_, _>(handler responses) |> app.Run
