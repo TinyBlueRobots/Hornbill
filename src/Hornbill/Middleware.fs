@@ -6,34 +6,67 @@ open System
 open System.Threading.Tasks
 open System.Collections.Generic
 
+type StatusCode = int
+
+type Headers = KeyValuePair<string, string> seq
+
+type Body = string
+
 type Response = 
   private
-  | Text of body : string
-  | Code of statusCode : int
-  | Full of statusCode : int * headers : KeyValuePair<string, string> seq * body : string
+  | Text of Body
+  | Code of statusCode : StatusCode
+  | Headers of StatusCode * Headers
+  | Full of StatusCode * Headers * Body
   | Raw of httpResponse : string
-
-  static member CreateText(body) = Text(body)
-  static member CreateCode(statusCode) = Code(statusCode)
+  static member CreateText body = Text body
+  static member CreateCode statusCode = Code statusCode
+  static member CreateHeaders(statusCode, headers) = Headers(statusCode, headers)
   static member CreateFull(statusCode, headers, body) = Full(statusCode, headers, body)
-  static member CreateRaw(httpResponse) = Raw(httpResponse)
+  static member CreateRaw httpResponse = Raw httpResponse
 
 module private Middleware = 
   let task = Task.Delay 0
   
+  let withStatusCode statusCode (ctx : IOwinContext) = 
+    ctx.Response.StatusCode <- statusCode
+    ctx
+  
+  let withHeaders headers (ctx : IOwinContext) = 
+    headers |> Seq.iter (fun (header : KeyValuePair<_, _>) -> ctx.Response.Headers.Add(header.Key, [| header.Value |]))
+    ctx
+  
+  let withBody (body : string) (ctx : IOwinContext) = ctx.Response.WriteAsync body
+  let send _ = task
+  
   let handler (responses : Dictionary<string, Response>) (ctx : IOwinContext) = 
-    match responses.[ctx.Request.Path.Value] with
-    | Text(body) -> 
-      ctx.Response.WriteAsync body
-    | Code(statusCode) -> 
-      ctx.Response.StatusCode <- statusCode
-      task
-    | Full(statusCode, headers, body) -> 
-      ctx.Response.StatusCode <- statusCode
-      headers |> Seq.iter (fun header -> ctx.Response.Headers.Add(header.Key, [| header.Value |]))      
-      ctx.Response.WriteAsync body
-    | Raw(httpResponse) -> 
-      task
+    ctx.Request.Method |> printfn "%A"
+    responses |> Seq.iter (fun x -> x.Value |> printfn "%+A")
+    let writeResponse = 
+      function 
+      | Text body -> ctx |> withBody body
+      | Code statusCode -> 
+        ctx
+        |> withStatusCode statusCode
+        |> send
+      | Headers(statusCode, headers) -> 
+        ctx
+        |> withStatusCode statusCode
+        |> withHeaders headers
+        |> send
+      | Full(statusCode, headers, body) -> 
+        ctx
+        |> withStatusCode statusCode
+        |> withHeaders headers
+        |> withBody body
+      | Raw _ -> task
+    
+    let path = ctx.Request.Path.Value
+    match responses.ContainsKey path with
+    | true -> writeResponse responses.[path]
+    | _ -> 
+      ctx.Response.StatusCode <- 404
+      sprintf "Path not found : %s" path |> ctx.Response.WriteAsync
   
   let app responses (app : IAppBuilder) = Func<_, _>(handler responses) |> app.Run
 

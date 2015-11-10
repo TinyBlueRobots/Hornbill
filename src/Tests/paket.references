@@ -1,2 +1,3 @@
 NUnit
 Microsoft.Owin.Testing
+Microsoft.Owin.Host.HttpListener
