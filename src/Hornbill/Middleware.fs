@@ -54,12 +54,11 @@ let handler (requests : ResizeArray<_>) (responses : Dictionary<string * Method,
       |> withHeaders headers
       |> withBody body
     
-  let path = ctx.Request.Path.Value
   match responses |> Seq.tryFind (find ctx) with
   | Some kvp -> writeResponse kvp.Value
   | _ -> 
     ctx.Response.StatusCode <- 404
-    sprintf "Path not found : %s" path |> ctx.Response.WriteAsync
+    send()
   
 let app requests responses (app : IAppBuilder) = Func<_, _>(handler requests responses) |> app.Run
 

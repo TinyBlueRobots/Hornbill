@@ -40,6 +40,14 @@ namespace Tests
         }
 
         [Test]
+        public void NotFound()
+        {
+            var fakeService = new FakeService();
+            var testServer = TestServer.Create(fakeService.App);
+            Assert.That(testServer.HttpClient.GetAsync("/boom").Result.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+        }
+
+        [Test]
         public void Hosted_Full()
         {
             using (var fakeService = new FakeService())
