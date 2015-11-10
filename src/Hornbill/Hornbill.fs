@@ -25,11 +25,11 @@ type Request =
 
 type Response = 
   internal
-  | Text of Body
-  | Code of StatusCode
+  | Body of StatusCode * Body
+  | StatusCode of StatusCode
   | Headers of StatusCode * Headers
   | Full of StatusCode * Headers * Body
-  static member CreateText body = Text body
-  static member CreateCode statusCode = Code statusCode
+  static member CreateBody(statusCode, body) = Body(statusCode, body)
+  static member CreateStatusCode statusCode = StatusCode statusCode
   static member CreateHeaders(statusCode, headers) = Headers(statusCode, headers)
   static member CreateFull(statusCode, headers, body) = Full(statusCode, headers, body)

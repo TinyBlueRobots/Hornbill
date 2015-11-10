@@ -15,7 +15,7 @@ namespace Tests
         public void Text()
         {
             var fakeService = new FakeService();
-            fakeService.AddResponse("/foo", Method.GET, Response.CreateText("foo"));
+            fakeService.AddResponse("/foo", Method.GET, Response.CreateBody(200, "foo"));
             var testServer = TestServer.Create(fakeService.App);
             Assert.That(testServer.HttpClient.GetStringAsync("/foo").Result, Is.EqualTo("foo"));
             Assert.That(fakeService.Requests.First().Method, Is.EqualTo(Method.GET));
@@ -25,7 +25,7 @@ namespace Tests
         public void Regex()
         {
             var fakeService = new FakeService();
-            fakeService.AddResponse("/foo/[\\d]+", Method.GET, Response.CreateCode(200));
+            fakeService.AddResponse("/foo/[\\d]+", Method.GET, Response.CreateStatusCode(200));
             var testServer = TestServer.Create(fakeService.App);
             Assert.That(testServer.HttpClient.GetAsync("/foo/123").Result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
         }
@@ -35,7 +35,7 @@ namespace Tests
         {
             var fakeService = new FakeService();
             var testServer = TestServer.Create(fakeService.App);
-            fakeService.AddResponse("/boom", Method.GET, Response.CreateCode(500));
+            fakeService.AddResponse("/boom", Method.GET, Response.CreateStatusCode(500));
             Assert.That(testServer.HttpClient.GetAsync("/boom").Result.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError));
         }
 
