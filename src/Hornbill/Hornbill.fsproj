@@ -58,7 +58,9 @@
   -->
   <ItemGroup>
     <None Include="paket.references" />
+    <Compile Include="Hornbill.fs" />
     <Compile Include="Middleware.fs" />
+    <Compile Include="FakeService.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
