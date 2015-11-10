@@ -52,7 +52,7 @@ let handler (requests : ResizeArray<_>) (responses : Dictionary<string * Method,
       |> withStatusCode statusCode
       |> withHeaders headers
       |> send
-    | Full(statusCode, headers, body) -> 
+    | HeadersAndBody(statusCode, headers, body) -> 
       ctx
       |> withStatusCode statusCode
       |> withHeaders headers

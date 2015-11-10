@@ -28,8 +28,8 @@ type Response =
   | Body of StatusCode * Body
   | StatusCode of StatusCode
   | Headers of StatusCode * Headers
-  | Full of StatusCode * Headers * Body
-  static member CreateBody(statusCode, body) = Body(statusCode, body)
-  static member CreateStatusCode statusCode = StatusCode statusCode
-  static member CreateHeaders(statusCode, headers) = Headers(statusCode, headers)
-  static member CreateFull(statusCode, headers, body) = Full(statusCode, headers, body)
+  | HeadersAndBody of StatusCode * Headers * Body
+  static member WithBody(statusCode, body) = Body(statusCode, body)
+  static member WithStatusCode statusCode = StatusCode statusCode
+  static member WithHeaders(statusCode, headers) = Headers(statusCode, headers)
+  static member WithHeadersAndBody(statusCode, headers, body) = HeadersAndBody(statusCode, headers, body)
