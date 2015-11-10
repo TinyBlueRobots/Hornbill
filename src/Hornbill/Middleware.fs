@@ -40,8 +40,6 @@ module private Middleware =
   let send _ = task
   
   let handler (responses : Dictionary<string, Response>) (ctx : IOwinContext) = 
-    ctx.Request.Method |> printfn "%A"
-    responses |> Seq.iter (fun x -> x.Value |> printfn "%+A")
     let writeResponse = 
       function 
       | Text body -> ctx |> withBody body
