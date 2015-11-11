@@ -10,14 +10,18 @@ open System.Text.RegularExpressions
 type FakeService() = 
   let responses = Dictionary<_, _>()
   let requests = ResizeArray<_>()
+  let tryFindKey path methd = 
+    responses.Keys |> Seq.tryFind (fun (p, m) -> m = methd && Regex.IsMatch(path, p, RegexOptions.IgnoreCase))
   
-  let tryPick path methd (kvp : KeyValuePair<_, _>) = 
-    let p, m = kvp.Key
-    if m = methd && Regex.IsMatch(path, p) then Some kvp.Value
-    else None
+  let findResponse (path, methd) = 
+    match tryFindKey path methd with
+    | Some key -> Some responses.[key]
+    | _ -> None
   
-  let findResponse (path, methd) = responses |> Seq.tryPick (tryPick path methd)
-  let setResponse (path, methd) response = responses.[(path, methd)] <- response
+  let setResponse (path, methd) response = 
+    match tryFindKey path methd with
+    | Some key -> responses.[key] <- response
+    | _ -> ()
   
   let findPort() = 
     TcpListener(IPAddress.Loopback, 0) |> fun l -> 
@@ -31,6 +35,10 @@ type FakeService() =
         member __.Dispose() = () }
   
   member __.AddResponse(path : string, verb, response) = 
+    let path = 
+      match path.[path.Length - 1] with
+      | '$' -> path
+      | _ -> sprintf "%s$" path
     match path.[0] with
     | '/' -> responses.Add((path, verb), response)
     | _ -> responses.Add((sprintf "/%s" path, verb), response)

@@ -25,9 +25,10 @@ namespace Tests
         public void Regex()
         {
             var fakeService = new FakeService();
-            fakeService.AddResponse("/foo/[\\d]+", Method.GET, Response.WithStatusCode(200));
+            fakeService.AddResponse("/foo/1234", Method.GET, Response.WithStatusCode(200));
+            fakeService.AddResponse("/foo/[\\d]+/boom", Method.GET, Response.WithStatusCode(500));
             var testServer = TestServer.Create(fakeService.App);
-            Assert.That(testServer.HttpClient.GetAsync("/foo/123").Result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(testServer.HttpClient.GetAsync("/foo/1234/boom").Result.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError));
         }
 
         [Test]
