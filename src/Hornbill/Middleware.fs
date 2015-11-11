@@ -39,10 +39,6 @@ let handler storeRequest findResponse setResponse ctx =
     | _ -> notFound()
   
   let key = ctx |> responseKey
-  
-  let notFound = 
-    ctx.Response.StatusCode <- 404
-    send
   match findResponse key with
   | Some(Responses(response :: responses)) -> 
     Responses responses |> setResponse key
