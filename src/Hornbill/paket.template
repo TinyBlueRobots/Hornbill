@@ -1,5 +1,7 @@
 ﻿type project
 id Hornbill
 authors Tiny Blue Robots
-description
-  Easily create stubbed HTTP endpoints for integration testing
+description Easily create stubbed HTTP endpoints for integration testing
+iconUrl https://dl.dropboxusercontent.com/u/11302680/nuget/hornbill.gif
+projectUrl https://github.com/TinyBlueRobots/Hornbill
+tags HTTP, testing, integration, OWIN
