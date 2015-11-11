@@ -2,4 +2,4 @@
 id Hornbill
 authors Tiny Blue Robots
 description
-  Easily create stubbed HTTP endpoints for integration testing with third parties
+  Easily create stubbed HTTP endpoints for integration testing
