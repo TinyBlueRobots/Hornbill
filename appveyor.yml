@@ -1,0 +1,8 @@
+build_script:
+  build.bat Appveyor
+  
+test: off
+
+environment:
+  NUGETAPIKEY:
+    secure: tTbslT1IYzKzUSY08Kcs2NXlO5l221n45dZMByTvNbeLv5tuyLS0Y9bjGXjK1EaU

@@ -10,6 +10,7 @@ open System.Text.RegularExpressions
 type FakeService() = 
   let responses = Dictionary<_, _>()
   let requests = ResizeArray<_>()
+
   let tryFindKey path methd = 
     responses.Keys |> Seq.tryFind (fun (p, m) -> m = methd && Regex.IsMatch(path, p, RegexOptions.IgnoreCase))
   

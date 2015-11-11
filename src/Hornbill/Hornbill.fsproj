@@ -62,6 +62,7 @@
     <Compile Include="OWinContext.fs" />
     <Compile Include="Middleware.fs" />
     <Compile Include="FakeService.fs" />
+    <None Include="paket.template" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
