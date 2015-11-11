@@ -41,6 +41,21 @@ namespace Tests
             Assert.That(fakeService.Requests.Count, Is.EqualTo(1));
         }
 
+
+        [Test]
+        public void RawResponse()
+        {
+            var fakeService = new FakeService();
+            var testServer = TestServer.Create(fakeService.App);
+            fakeService.AddResponse("/boom", Method.GET, Response.WithRawResponse(Resources.rawResponse));
+            var result = testServer.HttpClient.GetAsync("/boom").Result;
+            var body = result.Content.ReadAsStringAsync().Result;
+            Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(body, Is.EqualTo("BodyText"));
+            Assert.That(result.Headers.First().Key, Is.EqualTo("Foo"));
+            Assert.That(result.Headers.First().Value.First(), Is.EqualTo("Bar"));
+        }
+
         [Test]
         public void Delegate()
         {
