@@ -29,7 +29,9 @@ type Response =
   | StatusCode of StatusCode
   | Headers of StatusCode * Headers
   | HeadersAndBody of StatusCode * Headers * Body
+  | Responses of Response list
   static member WithBody(statusCode, body) = Body(statusCode, body)
   static member WithStatusCode statusCode = StatusCode statusCode
   static member WithHeaders(statusCode, headers) = Headers(statusCode, headers)
   static member WithHeadersAndBody(statusCode, headers, body) = HeadersAndBody(statusCode, headers, body)
+  static member WithResponses responses = responses |> Array.toList |> Responses

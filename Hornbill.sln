@@ -12,6 +12,12 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Hornbill", "src\Hornbill\Ho
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "src\Tests\Tests.csproj", "{08C8E573-F425-4429-B647-5439E6FE84B7}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C184AFE4-AE1E-41CC-92F4-97D7C8064A72}"
+	ProjectSection(SolutionItems) = preProject
+		build.bat = build.bat
+		build.fsx = build.fsx
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

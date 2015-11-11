@@ -48,6 +48,17 @@ namespace Tests
         }
 
         [Test]
+        public void Responses()
+        {
+            var fakeService = new FakeService();
+            var testServer = TestServer.Create(fakeService.App);
+            fakeService.AddResponse("/", Method.GET, Response.WithResponses(new [] { Response.WithStatusCode(200), Response.WithStatusCode(500)}));
+            Assert.That(testServer.HttpClient.GetAsync("/").Result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(testServer.HttpClient.GetAsync("/").Result.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError));
+            Assert.That(testServer.HttpClient.GetAsync("/").Result.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+        }
+
+        [Test]
         public void Hosted_Full()
         {
             using (var fakeService = new FakeService())

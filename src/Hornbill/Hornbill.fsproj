@@ -59,6 +59,7 @@
   <ItemGroup>
     <None Include="paket.references" />
     <Compile Include="Hornbill.fs" />
+    <Compile Include="OWinContext.fs" />
     <Compile Include="Middleware.fs" />
     <Compile Include="FakeService.fs" />
   </ItemGroup>
