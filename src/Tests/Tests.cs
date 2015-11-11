@@ -38,6 +38,7 @@ namespace Tests
             var testServer = TestServer.Create(fakeService.App);
             fakeService.AddResponse("/boom", Method.GET, Response.WithStatusCode(500));
             Assert.That(testServer.HttpClient.GetAsync("/boom").Result.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError));
+            Assert.That(fakeService.Requests.Count, Is.EqualTo(1));
         }
 
         [Test]
@@ -46,6 +47,7 @@ namespace Tests
             var fakeService = new FakeService();
             var testServer = TestServer.Create(fakeService.App);
             Assert.That(testServer.HttpClient.GetAsync("/boom").Result.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+            Assert.That(fakeService.Requests.First().Path, Is.EqualTo("/boom"));
         }
 
         [Test]

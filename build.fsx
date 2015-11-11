@@ -29,17 +29,8 @@ Target "Test" <| fun () ->
   finally
     if not isLocalBuild then AppVeyor.UploadTestResultsXml AppVeyor.TestResultsType.NUnit currentDirectory
 
-Target "NuGet" <| fun() -> 
-  Paket.Pack(fun p -> { p with Version = appVeyorBuildVersion })
-  let consoleOut = System.Console.Out
-  System.IO.TextWriter.Null |> System.Console.SetOut
-  Paket.Push(fun p -> 
-    { p with ApiKey = environVar "NUGETAPIKEY"
-             WorkingDir = "./temp" })
-  System.Console.SetOut consoleOut
-
 Target "Default" DoNothing
 
 "KillProcesses" ==> "Build" ==> "Test" ==> "Default"
-"Default" ==> "NuGet" ==> "Appveyor"
+
 RunTargetOrDefault "Default"

@@ -1,10 +1,6 @@
 os: Visual Studio 2015 
 
 build_script:
-  - build Appveyor
+  - build
   
 test: off
-
-environment:
-  NUGETAPIKEY:
-    secure: tTbslT1IYzKzUSY08Kcs2NXlO5l221n45dZMByTvNbeLv5tuyLS0Y9bjGXjK1EaU
