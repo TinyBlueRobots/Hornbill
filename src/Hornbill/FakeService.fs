@@ -8,13 +8,17 @@ open System.Collections.Generic
 open System.Text.RegularExpressions
 
 type FakeService() = 
-  let responses = Dictionary<_,_>()
+  let responses = Dictionary<_, _>()
   let requests = ResizeArray<_>()
-  let tryPick path methd (kvp : KeyValuePair<_, _>) =
-    let p,m = kvp.Key
-    if m = methd && Regex.IsMatch(path, p) then Some kvp.Value else None
+  
+  let tryPick path methd (kvp : KeyValuePair<_, _>) = 
+    let p, m = kvp.Key
+    if m = methd && Regex.IsMatch(path, p) then Some kvp.Value
+    else None
+  
   let findResponse (path, methd) = responses |> Seq.tryPick (tryPick path methd)
   let setResponse (path, methd) response = responses.[(path, methd)] <- response
+  
   let findPort() = 
     TcpListener(IPAddress.Loopback, 0) |> fun l -> 
       l.Start()
@@ -27,8 +31,7 @@ type FakeService() =
         member __.Dispose() = () }
   
   member __.AddResponse(path, verb, response) = responses.Add((path, verb), response)
-  member __.App appBuilder =
-    Middleware.app requests.Add findResponse setResponse appBuilder
+  member __.App appBuilder = Middleware.app requests.Add findResponse setResponse appBuilder
   
   member this.Host() = 
     let host = findPort() |> sprintf "http://localhost:%i"

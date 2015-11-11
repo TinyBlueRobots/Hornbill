@@ -12,9 +12,10 @@ let handler storeRequest findResponse setResponse ctx =
   ctx
   |> toRequest
   |> storeRequest
-  let notFound =
+  let notFound = 
     ctx.Response.StatusCode <- 404
     send
+  
   let handleResponse = 
     function 
     | Body(statusCode, body) -> 
@@ -36,15 +37,18 @@ let handler storeRequest findResponse setResponse ctx =
       |> withHeaders headers
       |> writeResponseBody body
     | _ -> notFound()
+  
   let key = ctx |> responseKey
-  let notFound =
+  
+  let notFound = 
     ctx.Response.StatusCode <- 404
     send
   match findResponse key with
-  | Some (Responses (response :: responses)) ->
-    Responses responses |> setResponse key 
+  | Some(Responses(response :: responses)) -> 
+    Responses responses |> setResponse key
     handleResponse response
   | Some response -> handleResponse response
   | _ -> notFound()
 
-let app storeRequest findResponse setResponse (app : IAppBuilder) = Func<_, _>(handler storeRequest findResponse setResponse) |> app.Run
+let app storeRequest findResponse setResponse (app : IAppBuilder) = 
+  Func<_, _>(handler storeRequest findResponse setResponse) |> app.Run
