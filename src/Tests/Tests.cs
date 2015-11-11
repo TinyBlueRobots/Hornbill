@@ -42,6 +42,16 @@ namespace Tests
         }
 
         [Test]
+        public void Delegate()
+        {
+            var fakeService = new FakeService();
+            var testServer = TestServer.Create(fakeService.App);
+            fakeService.AddResponse("/test", Method.GET, Response.WithDelegate(x => x.Query["foo"].Contains("bar") ? Response.WithStatusCode(200) : Response.WithStatusCode(404)));
+            Assert.That(testServer.HttpClient.GetAsync("/test?foo=bar").Result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(testServer.HttpClient.GetAsync("/test?foo=baz").Result.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+        }
+
+        [Test]
         public void NotFound()
         {
             var fakeService = new FakeService();

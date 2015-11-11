@@ -1,6 +1,7 @@
 ﻿namespace Hornbill
 
 open System.Collections.Generic
+open System
 
 type internal StatusCode = int
 
@@ -21,7 +22,8 @@ type Request =
   { Method : Method
     Path : string
     Body : string
-    Headers : Dictionary<string, string array> }
+    Headers : IDictionary<string, string array>
+    Query : IDictionary<string, string array> }
 
 type Response = 
   internal
@@ -30,8 +32,10 @@ type Response =
   | Headers of StatusCode * Headers
   | HeadersAndBody of StatusCode * Headers * Body
   | Responses of Response list
+  | Delegate of (Request -> Response)
   static member WithBody(statusCode, body) = Body(statusCode, body)
   static member WithStatusCode statusCode = StatusCode statusCode
   static member WithHeaders(statusCode, headers) = Headers(statusCode, headers)
   static member WithHeadersAndBody(statusCode, headers, body) = HeadersAndBody(statusCode, headers, body)
   static member WithResponses responses = responses |> Array.toList |> Responses
+  static member WithDelegate (func : Func<Request, Response>) =  Delegate (fun request -> func.Invoke request)

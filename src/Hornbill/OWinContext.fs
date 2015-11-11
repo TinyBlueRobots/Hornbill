@@ -16,7 +16,11 @@ let toRequest (ctx : IOwinContext) =
   { Method = ctx.Request.Method |> toMethod
     Path = ctx |> requestPath
     Body = (new StreamReader(ctx.Request.Body)).ReadToEnd()
-    Headers = Dictionary ctx.Request.Headers }
+    Headers = Dictionary ctx.Request.Headers
+    Query = 
+      ctx.Request.Query
+      |> Seq.map (fun x -> x.Key, x.Value)
+      |> dict }
 
 let responseKey ctx = ctx |> requestPath, ctx |> requestMethod
 
@@ -26,5 +30,5 @@ let withStatusCode statusCode (ctx : IOwinContext) =
 
 let withHeaders headers ctx = 
   let ctxHeaders = ctx |> responseHeaders
-  headers |> Seq.iter (fun (header : KeyValuePair<_, _>) -> ctxHeaders.Add(header.Key, [| header.Value |]))
+  headers |> Seq.iter (fun (KeyValue(k, v)) -> ctxHeaders.Add(k, [| v |]))
   ctx
