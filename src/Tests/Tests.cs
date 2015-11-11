@@ -76,5 +76,17 @@ namespace Tests
                 Assert.That(linkHeader, Is.EqualTo(new [] {"Bar"}));
             }
         }
+
+        [Test]
+        public void Same_path_different_method()
+        {
+            var fakeService = new FakeService();
+            var testServer = TestServer.Create(fakeService.App);
+            fakeService.AddResponse("/", Method.GET, Response.WithStatusCode(200));
+            fakeService.AddResponse("/", Method.HEAD, Response.WithStatusCode(404));
+            Assert.That(testServer.HttpClient.GetAsync("/").Result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+            var httpRequestMessage = new HttpRequestMessage {Method = HttpMethod.Head};
+            Assert.That(testServer.HttpClient.SendAsync(httpRequestMessage).Result.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+        }
     }
 }

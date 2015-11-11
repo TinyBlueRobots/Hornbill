@@ -30,7 +30,11 @@ type FakeService() =
     { new IDisposable with
         member __.Dispose() = () }
   
-  member __.AddResponse(path, verb, response) = responses.Add((path, verb), response)
+  member __.AddResponse(path : string, verb, response) = 
+    match path.[0] with
+    | '/' -> responses.Add((path, verb), response)
+    | _ -> responses.Add((sprintf "/%s" path, verb), response)
+  
   member __.App appBuilder = Middleware.app requests.Add findResponse setResponse appBuilder
   
   member this.Host() = 
