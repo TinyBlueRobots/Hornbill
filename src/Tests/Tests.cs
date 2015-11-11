@@ -52,8 +52,8 @@ namespace Tests
             var body = result.Content.ReadAsStringAsync().Result;
             Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
             Assert.That(body, Is.EqualTo("BodyText"));
-            Assert.That(result.Headers.First().Key, Is.EqualTo("Foo"));
-            Assert.That(result.Headers.First().Value.First(), Is.EqualTo("Bar"));
+            Assert.That(result.Headers.First().Key, Is.EqualTo("foo"));
+            Assert.That(result.Headers.First().Value.First(), Is.EqualTo("bar"));
         }
 
         [Test]
@@ -64,6 +64,17 @@ namespace Tests
             fakeService.AddResponse("/test", Method.GET, Response.WithDelegate(x => x.Query["foo"].Contains("bar") ? Response.WithStatusCode(200) : Response.WithStatusCode(404)));
             Assert.That(testServer.HttpClient.GetAsync("/test?foo=bar").Result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
             Assert.That(testServer.HttpClient.GetAsync("/test?foo=baz").Result.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+        }
+
+        [Test]
+        public void Headers()
+        {
+            var fakeService = new FakeService();
+            var testServer = TestServer.Create(fakeService.App);
+            fakeService.AddResponse("/test", Method.GET, Response.WithHeaders(200, new[] { new KeyValuePair<string, string>("foo", "bar")}));
+            var result = testServer.HttpClient.GetAsync("/test").Result;
+            Assert.That(result.Headers.First().Key, Is.EqualTo("foo"));
+            Assert.That(result.Headers.First().Value.First(), Is.EqualTo("bar"));
         }
 
         [Test]
