@@ -1,7 +1,7 @@
 os: Visual Studio 2015 
 
 build_script:
-  build.bat Appveyor
+  - build Appveyor
   
 test: off
 
