@@ -44,23 +44,22 @@ type Response =
     |> Array.toList
     |> Responses
   
-  static member WithDelegate(func : Func<Request, Response>) = Delegate(fun request -> func.Invoke request)
+  static member WithDelegate(func : Func<Request, Response>) = Delegate func.Invoke
   static member WithRawResponse(response : string) = 
-    let lines = response.Split([| Environment.NewLine |], StringSplitOptions.None) |> Array.toList
-    let (firstLine :: lines) = lines
-    let statusCode = Regex.Match(firstLine, "\s\d+\s").Value |> int
+    let lines = response.Split([| Environment.NewLine |], StringSplitOptions.None)
+    let statusCode = Regex.Match(lines |> Array.head, "\s\d+\s").Value |> int
     
-    let rec parseHeaders headers (lines : string list) = 
-      match lines with
-      | line :: lines when line.Contains ":" -> 
-        let values = line.Split ':' |> Array.map (fun x -> x.Trim())
-        parseHeaders ((values.[0], values.[1]) :: headers) lines
-      | _ -> headers |> dict
-    
-    let headers = parseHeaders [] lines
+    let headers = 
+      lines
+      |> Array.skip 1
+      |> Array.takeWhile ((<>) "")
+      |> Array.map (fun x -> x.Split ':')
+      |> Array.map (fun [| key; value |] -> key.Trim(), value.Trim())
+      |> dict
     
     let body = 
       lines
-      |> List.skipWhile (fun x -> x <> "")
-      |> List.reduce (+)
+      |> Array.skipWhile ((<>) "")
+      |> Array.reduce (+)
+    
     HeadersAndBody(statusCode, headers, body)
