@@ -20,11 +20,11 @@ Easy http stubs for integration testing
 
 ##### Headers
 
-`fakeService.AddResponse("/foo", Method.GET, Response.WithHeaders(200, new[] { new KeyValuePair<string, string>("foo", "bar")}))`
+`fakeService.AddResponse("/foo", Method.GET, Response.WithHeaders(200, new Dictionary<string, string> {["foo"] = "bar" }))`
 
 ##### Headers and body
 
-`fakeService.AddResponse("/foo", Method.GET, Response.WithHeadersAndBody(200, new[] { new KeyValuePair<string, string>("foo", "bar")}, "body"))`
+`fakeService.AddResponse("/foo", Method.GET, Response.WithHeadersAndBody(200, new Dictionary<string, string> {["foo"] = "bar" }, "body"))`
 
 ##### Queue of responses
 
