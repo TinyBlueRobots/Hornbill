@@ -35,7 +35,7 @@ type FakeService() =
     { new IDisposable with
         member __.Dispose() = () }
   
-  member __.AddResponse(path : string, verb, response) = 
+  member __.AddResponse(path : string) verb response = 
     let path = 
       match path.[path.Length - 1] with
       | '$' -> path
