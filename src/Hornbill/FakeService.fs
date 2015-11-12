@@ -3,9 +3,9 @@
 open System
 open System.Net.Sockets
 open System.Net
-open Microsoft.Owin.Hosting
 open System.Collections.Generic
 open System.Text.RegularExpressions
+open Microsoft.Owin.Hosting
 
 type FakeService() = 
   let responses = Dictionary<_, _>()
@@ -44,11 +44,9 @@ type FakeService() =
     | '/' -> responses.Add((path, verb), response)
     | _ -> responses.Add((sprintf "/%s" path, verb), response)
   
-  member __.App appBuilder = Middleware.app requests.Add findResponse setResponse appBuilder
-  
-  member this.Host() = 
+  member __.Host() = 
     let host = findPort() |> sprintf "http://localhost:%i"
-    webApp <- WebApp.Start(host, this.App)
+    webApp <- WebApp.Start(host, Middleware.app requests.Add findResponse setResponse)
     host
   
   member __.Requests = requests

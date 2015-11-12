@@ -38,7 +38,7 @@ Easy http stubs for integration testing
 
 Requires a string in this format
 ```
-HTTP/1.1 200 OK
+200
 foo: bar
 
 Body

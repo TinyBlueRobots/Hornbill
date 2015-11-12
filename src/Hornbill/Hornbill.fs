@@ -47,7 +47,7 @@ type Response =
   static member WithDelegate(func : Func<Request, Response>) = Delegate func.Invoke
   static member WithRawResponse(response : string) = 
     let lines = Regex.Split(response, "\r?\n")
-    let statusCode = Regex.Match(lines |> Array.head, "\s\d+\s").Value |> int
+    let statusCode = Regex.Match(lines |> Array.head, "\d{3}").Value |> int
     
     let headers = 
       lines
