@@ -51,7 +51,8 @@ namespace Tests
             var result = testServer.HttpClient.GetAsync("/boom").Result;
             var body = result.Content.ReadAsStringAsync().Result;
             Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
-            Assert.That(body, Is.EqualTo("BodyText"));
+            var expectedBody = $"Body{Environment.NewLine}Text";
+            Assert.That(body, Is.EqualTo(expectedBody));
             Assert.That(result.Headers.First().Key, Is.EqualTo("foo"));
             Assert.That(result.Headers.First().Value.First(), Is.EqualTo("bar"));
         }

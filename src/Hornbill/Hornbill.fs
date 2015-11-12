@@ -60,6 +60,7 @@ type Response =
     let body = 
       lines
       |> Array.skipWhile ((<>) "")
-      |> Array.reduce (+)
+      |> Array.skip 1
+      |> String.concat Environment.NewLine
     
     HeadersAndBody(statusCode, headers, body)
