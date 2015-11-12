@@ -5,4 +5,5 @@ description Easily create stubbed HTTP endpoints for integration testing
 iconUrl https://dl.dropboxusercontent.com/u/11302680/nuget/hornbill.gif
 projectUrl https://github.com/TinyBlueRobots/Hornbill
 tags HTTP, testing, integration, OWIN, stub, fake, test, web
-    bin/Release/Hornbill.* ==> lib
+files
+  bin/Release/Hornbill.* ==> lib
