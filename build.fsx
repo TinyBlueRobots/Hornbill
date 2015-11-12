@@ -36,6 +36,7 @@ Target "Nuget" <| fun () ->
   Paket.Push(fun p -> 
     { p with ApiKey = apiKey
              WorkingDir = "./temp" })
+  DeleteDir "./temp"
 
 Target "Default" DoNothing
 "KillProcesses" ==> "Build" ==> "Test" ==> "Default"
