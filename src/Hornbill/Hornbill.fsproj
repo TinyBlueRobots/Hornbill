@@ -58,16 +58,22 @@
   </Target>
   -->
   <ItemGroup>
+    <Content Include="FodyWeavers.xml.install.xdt">
+      <Paket>True</Paket>
+    </Content>
+    <Content Include="FodyWeavers.xml.uninstall.xdt">
+      <Paket>True</Paket>
+    </Content>
     <Content Include="FodyWeavers.xml">
       <Paket>True</Paket>
     </Content>
     <None Include="paket.references" />
     <Compile Include="Hornbill.fs" />
     <Compile Include="OWinContext.fs" />
+    <Compile Include="Response.fs" />
     <Compile Include="Middleware.fs" />
     <Compile Include="FakeService.fs" />
     <None Include="paket.template" />
-    <Compile Include="HornbillFsharp.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />

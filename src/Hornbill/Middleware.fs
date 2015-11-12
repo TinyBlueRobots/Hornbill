@@ -41,7 +41,7 @@ let handler storeRequest findResponse setResponse ctx =
   | Some(Responses(response :: responses)) -> 
     Responses responses |> setResponse key
     response
-  | Some(Delegate dlg) -> dlg request
+  | Some(Dlg dlg) -> dlg request
   | Some response -> response
   | _ -> Response.WithStatusCode 404
   |> responseHandler ctx

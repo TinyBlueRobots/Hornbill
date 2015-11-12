@@ -30,5 +30,5 @@ let withStatusCode statusCode (ctx : IOwinContext) =
 
 let withHeaders headers ctx = 
   let ctxHeaders = ctx |> responseHeaders
-  headers |> Seq.iter (fun (KeyValue(k, v)) -> ctxHeaders.Add(k, [| v |]))
+  headers |> Seq.iter (fun (k, v) -> ctxHeaders.Add(k, [| v |]))
   ctx

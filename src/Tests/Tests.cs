@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using Hornbill;
-using Microsoft.Owin.Testing;
 using NUnit.Framework;
 
 namespace Tests
@@ -87,7 +86,7 @@ namespace Tests
             using (var fakeService = new FakeService())
             using (var httpClient = HttpClient(fakeService.Host()))
             {
-                fakeService.AddResponse("/test", Method.GET, Response.WithHeaders(200, new[] { new KeyValuePair<string, string>("foo", "bar") }));
+                fakeService.AddResponse("/test", Method.GET, Response.WithHeaders(200, new Dictionary<string, string> {["foo"] = "bar" }));
                 var result = httpClient.GetAsync("/test").Result;
                 Assert.That(result.Headers.First().Key, Is.EqualTo("foo"));
                 Assert.That(result.Headers.First().Value.First(), Is.EqualTo("bar"));
@@ -125,8 +124,7 @@ namespace Tests
             using (var httpClient = HttpClient(fakeService.Host()))
             {
                 const string link = "http://foo/bar";
-                var links = new KeyValuePair<string, string>("Link", link);
-                fakeService.AddResponse("/headers", Method.GET, Response.WithHeadersAndBody(200, new[] { links }, "body"));
+                fakeService.AddResponse("/headers", Method.GET, Response.WithHeadersAndBody(200, new Dictionary<string, string> {["Link"] = link }, "body"));
                 var host = fakeService.Host();
                 httpClient.DefaultRequestHeaders.Add("Foo", "Bar");
                 var result = httpClient.GetAsync("/headers").Result;

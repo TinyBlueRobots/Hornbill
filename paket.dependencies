@@ -2,9 +2,9 @@ source https://nuget.org/api/v2
 
 nuget Costura.Fody
 nuget FAKE
+nuget Microsoft.Net.Http
 nuget Microsoft.Owin
 nuget Microsoft.Owin.Host.HttpListener
 nuget Microsoft.Owin.Hosting
-nuget Microsoft.Owin.Testing
 nuget NUnit
 nuget NUnit.Runners
