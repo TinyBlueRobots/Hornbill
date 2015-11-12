@@ -72,7 +72,7 @@ namespace Tests
         {
             var fakeService = new FakeService();
             var testServer = TestServer.Create(fakeService.App);
-            fakeService.AddResponse("/test", Method.GET, Response.WithHeaders(200, new[] { new KeyValuePair<string, string>("foo", "bar")}));
+            fakeService.AddResponse("/test", Method.GET, Response.WithHeaders(200, new[] { new KeyValuePair<string, string>("foo", "bar") }));
             var result = testServer.HttpClient.GetAsync("/test").Result;
             Assert.That(result.Headers.First().Key, Is.EqualTo("foo"));
             Assert.That(result.Headers.First().Value.First(), Is.EqualTo("bar"));
@@ -92,7 +92,7 @@ namespace Tests
         {
             var fakeService = new FakeService();
             var testServer = TestServer.Create(fakeService.App);
-            fakeService.AddResponse("/", Method.GET, Response.WithResponses(new [] { Response.WithStatusCode(200), Response.WithStatusCode(500)}));
+            fakeService.AddResponse("/", Method.GET, Response.WithResponses(new[] { Response.WithStatusCode(200), Response.WithStatusCode(500) }));
             Assert.That(testServer.HttpClient.GetAsync("/").Result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
             Assert.That(testServer.HttpClient.GetAsync("/").Result.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError));
             Assert.That(testServer.HttpClient.GetAsync("/").Result.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
@@ -113,7 +113,7 @@ namespace Tests
                 Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
                 Assert.AreEqual(link, result.Headers.GetValues("Link").Single());
                 var linkHeader = fakeService.Requests.First().Headers.Single(x => x.Key == "Foo").Value;
-                Assert.That(linkHeader, Is.EqualTo(new [] {"Bar"}));
+                Assert.That(linkHeader, Is.EqualTo(new[] { "Bar" }));
             }
         }
 
@@ -125,8 +125,23 @@ namespace Tests
             fakeService.AddResponse("/", Method.GET, Response.WithStatusCode(200));
             fakeService.AddResponse("/", Method.HEAD, Response.WithStatusCode(404));
             Assert.That(testServer.HttpClient.GetAsync("/").Result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
-            var httpRequestMessage = new HttpRequestMessage {Method = HttpMethod.Head};
+            var httpRequestMessage = new HttpRequestMessage { Method = HttpMethod.Head };
             Assert.That(testServer.HttpClient.SendAsync(httpRequestMessage).Result.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+        }
+
+        [Test]
+        public void File()
+        {
+            var fakeService = new FakeService();
+            var testServer = TestServer.Create(fakeService.App);
+            fakeService.AddResponse("/", Method.GET, Response.WithFile(".\\Resources\\rawResponse.txt"));
+            var result = testServer.HttpClient.GetAsync("/").Result;
+            var body = result.Content.ReadAsStringAsync().Result;
+            Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+            var expectedBody = $"Body{Environment.NewLine}Text";
+            Assert.That(body, Is.EqualTo(expectedBody));
+            Assert.That(result.Headers.First().Key, Is.EqualTo("foo"));
+            Assert.That(result.Headers.First().Value.First(), Is.EqualTo("bar"));
         }
     }
 }

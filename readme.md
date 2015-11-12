@@ -45,6 +45,12 @@ Body
 ```
 `fakeService.AddResponse("/foo", Method.GET, Response.WithRawResponse(Resources.rawResponse))`
 
+##### File
+
+The same as raw, but takes a file name instead of a string
+
+`fakeService.AddResponse("/", Method.GET, Response.WithFile(".\\Resources\\rawResponse.txt"));`
+
 #### Self hosting
 Service will be hosted on a random available port
 

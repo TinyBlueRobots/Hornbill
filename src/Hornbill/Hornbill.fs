@@ -3,6 +3,7 @@
 open System.Collections.Generic
 open System
 open System.Text.RegularExpressions
+open System.IO
 
 type internal StatusCode = int
 
@@ -38,7 +39,6 @@ type Response =
   static member WithStatusCode statusCode = StatusCode statusCode
   static member WithHeaders(statusCode, headers) = Headers(statusCode, headers)
   static member WithHeadersAndBody(statusCode, headers, body) = HeadersAndBody(statusCode, headers, body)
-  
   static member WithResponses responses = 
     responses
     |> Array.toList
@@ -64,3 +64,5 @@ type Response =
       |> String.concat Environment.NewLine
     
     HeadersAndBody(statusCode, headers, body)
+
+  static member WithFile path = File.ReadAllText path |> Response.WithRawResponse
