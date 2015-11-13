@@ -8,3 +8,5 @@ projectUrl https://github.com/TinyBlueRobots/Hornbill
 tags HTTP testing integration OWIN stub fake test web
 files
   bin/Release/Hornbill.* ==> lib
+dependencies
+  FSharp.Core >= 4.0.0.1

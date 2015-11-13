@@ -8,3 +8,4 @@ nuget Microsoft.Owin.Host.HttpListener
 nuget Microsoft.Owin.Hosting
 nuget NUnit
 nuget NUnit.Runners
+nuget FSharp.Core

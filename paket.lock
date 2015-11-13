@@ -5,6 +5,7 @@ NUGET
       Fody (>= 1.29.3)
     FAKE (4.8.0)
     Fody (1.29.3)
+    FSharp.Core (4.0.0.1)
     Microsoft.Bcl (1.1.10)
       Microsoft.Bcl.Build (>= 1.0.14)
     Microsoft.Bcl.Build (1.0.21) - import_targets: false
