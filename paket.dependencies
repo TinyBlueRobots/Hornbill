@@ -1,7 +1,6 @@
 source https://nuget.org/api/v2
 
 nuget FAKE
-nuget ilmerge
 nuget Microsoft.Net.Http
 nuget Microsoft.Owin
 nuget Microsoft.Owin.Host.HttpListener
