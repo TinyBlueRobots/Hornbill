@@ -14,9 +14,14 @@ Target "KillProcesses" <| fun () ->
 
 Target "Build" <| fun () -> 
   !!"src/**/bin/Release/" |> CleanDirs
+  CleanDir "build"
   build (fun x -> 
     { x with Verbosity = Some MSBuildVerbosity.Quiet
              Properties = [ "Configuration", "Release" ] }) solutionFile
+
+Target "ILMerge" <| fun () ->
+  CreateDir "build"
+  ILMerge(fun p -> { p with Libraries = [ "src/Hornbill/bin/Release/FSharp.Core.dll" ] }) "build/Hornbill.dll" "src/Hornbill/bin/Release/Hornbill.dll"
 
 Target "Test" <| fun () -> 
   let tests = !!"src/**/bin/Release/Tests.dll"
@@ -39,6 +44,6 @@ Target "Nuget" <| fun () ->
   DeleteDir "./temp"
 
 Target "Default" DoNothing
-"KillProcesses" ==> "Build" ==> "Test" ==> "Default"
+"KillProcesses" ==> "Build" ==> "ILMerge" ==> "Test" ==> "Default"
 "Default" ==> "Nuget"
 RunTargetOrDefault "Default"

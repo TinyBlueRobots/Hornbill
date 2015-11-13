@@ -1,11 +1,10 @@
 source https://nuget.org/api/v2
 
-nuget Costura.Fody
 nuget FAKE
+nuget ilmerge
 nuget Microsoft.Net.Http
 nuget Microsoft.Owin
 nuget Microsoft.Owin.Host.HttpListener
 nuget Microsoft.Owin.Hosting
 nuget NUnit
 nuget NUnit.Runners
-nuget FSharp.Core

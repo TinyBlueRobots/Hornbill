@@ -7,6 +7,7 @@ iconUrl https://dl.dropboxusercontent.com/u/11302680/nuget/hornbill.gif
 projectUrl https://github.com/TinyBlueRobots/Hornbill
 tags HTTP testing integration OWIN stub fake test web
 files
-  bin/Release/Hornbill.* ==> lib
+  ../../build/Hornbill.* ==> lib
 dependencies
-  FSharp.Core >= 4.0.0.1
+  Microsoft.Owin.Hosting >= 3.0.1
+  Microsoft.Owin.Host.HttpListener >= 3.0.1
