@@ -37,8 +37,8 @@ type FakeService() =
     let formatter : Printf.StringFormat<_> = 
       match path.StartsWith "/", path.EndsWith "$" with
       | false, false -> "/%s$"
-      | false, _ -> "/%s"
-      | true, _ -> "%s$"
+      | false, true -> "/%s"
+      | true, false -> "%s$"
       | _ -> "%s"
     responses.Add((sprintf formatter path, verb), response)
   
