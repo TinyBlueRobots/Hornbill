@@ -6,7 +6,7 @@ using System.Net.Http;
 using Hornbill;
 using NUnit.Framework;
 
-namespace Tests
+namespace Tests.CSharp
 {
   public class Tests
   {
@@ -16,7 +16,7 @@ namespace Tests
     }
 
     [Test]
-    public void Text()
+    public void Body()
     {
       using (var fakeService = new FakeService())
       using (var httpClient = HttpClient(fakeService.Start()))
