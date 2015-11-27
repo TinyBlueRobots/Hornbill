@@ -51,16 +51,18 @@ The same as raw, but takes a file name instead of a string
 
 `fakeService.AddResponse("/", Method.GET, Response.WithFile(".\\Resources\\rawResponse.txt"));`
 
-#### Self hosting
-Service will be hosted on a random available port
+#### Starting the service
 
-`var address = fakeService.Start()`
+Calling 'fakeService.Start()' to host on a random available port. The address is returned as a `string`.
 
 #### Requests
+
 You can examine the requests sent to your service via `fakeService.Requests`
 
 #### Address
+
 The address is returned from `fakeService.Start()` and is also available as a `string` `fakeService.Url` or `Uri` `fakeService.Uri`
 
 #### Stopping the service
+
 FakeService implements `IDisposable` but you can also call `fakeService.Stop()`
