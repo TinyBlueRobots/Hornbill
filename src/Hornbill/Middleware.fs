@@ -23,7 +23,7 @@ let responseHandler ctx =
     |> withStatusCode statusCode
     |> withHeaders headers
     |> send
-  | HeadersAndBody(statusCode, headers, body) -> 
+  | BodyAndHeaders(statusCode, body, headers) -> 
     ctx
     |> withStatusCode statusCode
     |> withHeaders headers

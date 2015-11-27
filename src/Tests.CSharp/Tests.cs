@@ -133,20 +133,33 @@ namespace Tests.CSharp
     }
 
     [Test]
-    public void Hosted_Full()
+    public void HeadersAndBody() 
     {
       using (var fakeService = new FakeService())
       using (var httpClient = HttpClient(fakeService.Start()))
       {
         const string link = "http://foo/bar";
-        fakeService.AddResponse("/headers", Method.GET, Response.WithHeadersAndBody(200, new Dictionary<string, string> {["Link"] = link }, "body"));
-        var host = fakeService.Start();
+        fakeService.AddResponse("/headers", Method.GET, Response.WithBodyAndHeaders(200, "body", new Dictionary<string, string> {["Link"] = link } ));
         httpClient.DefaultRequestHeaders.Add("Foo", "Bar");
         var result = httpClient.GetAsync("/headers").Result;
         Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
         Assert.AreEqual(link, result.Headers.GetValues("Link").Single());
         var linkHeader = fakeService.Requests.First().Headers.Single(x => x.Key == "Foo").Value;
         Assert.That(linkHeader, Is.EqualTo(new[] { "Bar" }));
+      }
+    }
+
+    [Test]
+    public void HeadersAndBody2()
+    {
+      using (var fakeService = new FakeService())
+      using (var httpClient = HttpClient(fakeService.Start()))
+      {
+        fakeService.AddResponse("/headers", Method.GET, Response.WithBodyAndHeaders(200, "body", "foo :  bar"));
+        var result = httpClient.GetAsync("/headers").Result;
+        Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+        Assert.That(result.Content.ReadAsStringAsync().Result, Is.EqualTo("body"));
+        Assert.That(result.Headers.GetValues("foo").First(), Is.EqualTo("bar"));
       }
     }
 

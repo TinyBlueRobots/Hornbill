@@ -23,9 +23,13 @@ Easy http stubs for integration testing
 
 `fakeService.AddResponse("/foo", Method.GET, Response.WithHeaders(200, new Dictionary<string, string> {["foo"] = "bar" }))`
 
-##### Headers and body
+`fakeService.AddResponse("/foo", Method.GET, Response.WithHeaders(200, "foo:bar", "bing:bong")`
 
-`fakeService.AddResponse("/foo", Method.GET, Response.WithHeadersAndBody(200, new Dictionary<string, string> {["foo"] = "bar" }, "body"))`
+##### Body and Headers 
+
+`fakeService.AddResponse("/foo", Method.GET, Response.WithBodyAndHeaders(200, "body", new Dictionary<string, string> {["foo"] = "bar" }))`
+
+`fakeService.AddResponse("/foo", Method.GET, Response.WithBodyAndHeaders(200, "body", "foo:bar", "bing:bong"))`
 
 ##### Queue of responses
 

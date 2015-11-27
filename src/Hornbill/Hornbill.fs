@@ -40,8 +40,7 @@ module private ResponseHelpers =
       lines
       |> Array.skip 1
       |> Array.takeWhile ((<>) "")
-      |> Array.map (fun x -> x.Split ':')
-      |> Array.map (fun [| key; value |] -> key.Trim(), value.Trim())
+      |> Array.map parseHeader
       |> dict
     
     let body = 
@@ -50,22 +49,28 @@ module private ResponseHelpers =
       |> Array.skip 1
       |> String.concat Environment.NewLine
     
-    statusCode, headers, body
+    statusCode, body, headers
 
 type Response = 
   internal
   | Body of StatusCode * Body
   | StatusCode of StatusCode
   | Headers of StatusCode * Headers
-  | HeadersAndBody of StatusCode * Headers * Body
+  | BodyAndHeaders of StatusCode * Body * Headers
   | Responses of Response list
   | Dlg of (Request -> Response)
   static member WithHeaders(statusCode, [<ParamArray>] headers) = Headers(statusCode, headers |> Array.map parseHeader)
   static member WithHeaders(statusCode, headers) = Headers(statusCode, headers |> mapHeaders)
   static member WithStatusCode statusCode = StatusCode statusCode
   static member WithBody(statusCode, body) = Body(statusCode, body)
-  static member WithHeadersAndBody(statusCode, headers, body) = HeadersAndBody(statusCode, headers |> mapHeaders, body)
-  static member WithResponses responses = responses |> Array.toList |> Responses
+  static member WithBodyAndHeaders(statusCode, body, headers) = BodyAndHeaders(statusCode, body, headers |> mapHeaders)
+  static member WithBodyAndHeaders(statusCode, body, [<ParamArray>] headers) = BodyAndHeaders(statusCode, body, headers |> Array.map parseHeader)
+  
+  static member WithResponses responses = 
+    responses
+    |> Array.toList
+    |> Responses
+  
   static member WithDelegate(func : Func<Request, Response>) = Dlg func.Invoke
-  static member WithRawResponse response = parseResponse response |> Response.WithHeadersAndBody
+  static member WithRawResponse response = parseResponse response |> Response.WithBodyAndHeaders
   static member WithFile path = File.ReadAllText path |> Response.WithRawResponse
