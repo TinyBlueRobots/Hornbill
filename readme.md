@@ -58,3 +58,6 @@ Service will be hosted on a random available port
 
 #### Requests
 You can examine the requests sent to your service via `fakeService.Requests`
+
+#### Address
+The address is returned from `fakeService.Start()` and is also available as a `string` `fakeService.Url` or `Uri` `fakeService.Uri`
