@@ -11,7 +11,8 @@ type FakeService() =
   let responses = Dictionary<_, _>()
   let requests = ResizeArray<_>()
   let tryFindKey path methd = responses.Keys |> Seq.tryFind (fun (p, m) -> m = methd && Regex.IsMatch(path, p, RegexOptions.IgnoreCase))
-  
+  let mutable url = ""
+
   let findResponse (path, methd) = 
     match tryFindKey path methd with
     | Some key -> Some responses.[key]
@@ -41,11 +42,21 @@ type FakeService() =
       | true, false -> "%s$"
       | _ -> "%s"
     responses.Add((sprintf formatter path, verb), response)
+
+  member __.Url =
+    match url with
+    | "" -> failwith "Service not started"
+    | _ -> url
+
+  member this.Uri = Uri this.Url
   
-  member __.Host() = 
-    let host = findPort() |> sprintf "http://localhost:%i"
-    webApp <- WebApp.Start(host, Middleware.app requests.Add findResponse setResponse)
-    host
+  member __.Start() = 
+    url <- findPort() |> sprintf "http://localhost:%i"
+    webApp <- WebApp.Start(url, Middleware.app requests.Add findResponse setResponse)
+    url
+
+  [<Obsolete "Use Start()">]
+  member this.Host() = this.Start() 
   
   member __.Requests = requests
   interface IDisposable with

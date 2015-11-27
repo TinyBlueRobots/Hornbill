@@ -54,7 +54,7 @@ The same as raw, but takes a file name instead of a string
 #### Self hosting
 Service will be hosted on a random available port
 
-`var address = fakeService.Host()`
+`var address = fakeService.Start()`
 
 #### Requests
 You can examine the requests sent to your service via `fakeService.Requests`
