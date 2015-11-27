@@ -57,7 +57,11 @@ type FakeService() =
 
   [<Obsolete "Use Start()">]
   member this.Host() = this.Start() 
+
+  member __.Stop() = webApp.Dispose()
   
   member __.Requests = requests
   interface IDisposable with
-    member __.Dispose() = webApp.Dispose()
+    member this.Dispose() = this.Stop()
+
+

@@ -174,10 +174,11 @@ namespace Tests
     }
 
     [Test]
-    public void Host_not_started_Exception_thrown_when_getting_uri()
+    public void Host_not_started_exception_thrown_when_getting_uri()
     {
       var fakeService = new FakeService();
       Assert.Throws<Exception>(delegate { var x = fakeService.Uri; }, "Service not started");
+      fakeService.Stop();
     }
   }
 }
