@@ -61,3 +61,6 @@ You can examine the requests sent to your service via `fakeService.Requests`
 
 #### Address
 The address is returned from `fakeService.Start()` and is also available as a `string` `fakeService.Url` or `Uri` `fakeService.Uri`
+
+#### Stopping the service
+FakeService implements `IDisposable` but you can also call `fakeService.Stop()`
