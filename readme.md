@@ -1,3 +1,4 @@
+![logo](https://dl.dropboxusercontent.com/u/11302680/nuget/hornbill.gif)
 # Hornbill
 
 Easy http stubs for integration testing
