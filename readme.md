@@ -53,7 +53,7 @@ The same as raw, but takes a file name instead of a string
 
 #### Starting the service
 
-Calling 'fakeService.Start()' to host on a random available port. The address is returned as a `string`.
+Calling `fakeService.Start()` to host on a random available port. The address is returned as a `string`.
 
 #### Requests
 
