@@ -94,6 +94,21 @@ namespace Tests
     }
 
     [Test]
+    public void Header_params()
+    {
+      using (var fakeService = new FakeService())
+      using (var httpClient = HttpClient(fakeService.Start()))
+      {
+        fakeService.AddResponse("/test", Method.GET, Response.WithHeaders(200, "foo   :   bar", "bing:bong"));
+        var result = httpClient.GetAsync("/test").Result;
+        Assert.That(result.Headers.First().Key, Is.EqualTo("foo"));
+        Assert.That(result.Headers.First().Value.First(), Is.EqualTo("bar"));
+        Assert.That(result.Headers.ElementAt(1).Key, Is.EqualTo("bing"));
+        Assert.That(result.Headers.ElementAt(1).Value.First(), Is.EqualTo("bong"));
+      }
+    }
+
+    [Test]
     public void NotFound()
     {
       using (var fakeService = new FakeService())

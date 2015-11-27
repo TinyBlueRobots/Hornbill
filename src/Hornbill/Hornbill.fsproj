@@ -61,7 +61,6 @@
     <None Include="paket.references" />
     <Compile Include="Hornbill.fs" />
     <Compile Include="OWinContext.fs" />
-    <Compile Include="Response.fs" />
     <Compile Include="Middleware.fs" />
     <Compile Include="FakeService.fs" />
     <None Include="paket.template" />
