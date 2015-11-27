@@ -20,7 +20,7 @@ Target "Build" <| fun () ->
              Properties = [ "Configuration", "Release" ] }) solutionFile
 
 Target "Test" <| fun () -> 
-  let tests = !!"src/**/bin/Release/Tests.dll"
+  let tests = !!"src/**/bin/Release/Tests*.dll"
   
   let nUnitParams p = 
     { p with DisableShadowCopy = true
