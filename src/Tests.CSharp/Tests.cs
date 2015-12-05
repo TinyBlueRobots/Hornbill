@@ -34,8 +34,8 @@ namespace Tests.CSharp
       using (var httpClient = HttpClient(fakeService.Start()))
       {
         fakeService.AddResponse("/foo/1234", Method.GET, Response.WithStatusCode(200));
-        fakeService.AddResponse("/foo/[\\d]+/boom", Method.GET, Response.WithStatusCode(500));
-        Assert.That(httpClient.GetAsync("/foo/1234/boom").Result.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError));
+        fakeService.AddResponse("/foo/[\\d]+/boom?this=that", Method.GET, Response.WithStatusCode(500));
+        Assert.That(httpClient.GetAsync("/foo/1234/boom?this=that").Result.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError));
       }
     }
 
@@ -74,7 +74,7 @@ namespace Tests.CSharp
       using (var fakeService = new FakeService())
       using (var httpClient = HttpClient(fakeService.Start()))
       {
-        fakeService.AddResponse("/test", Method.GET, Response.WithDelegate(x => x.Query["foo"].Contains("bar") ? Response.WithStatusCode(200) : Response.WithStatusCode(404)));
+        fakeService.AddResponse("/test?foo=bar", Method.GET, Response.WithDelegate(x => x.Query["foo"].Contains("bar") ? Response.WithStatusCode(200) : Response.WithStatusCode(404)));
         Assert.That(httpClient.GetAsync("/test?foo=bar").Result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
         Assert.That(httpClient.GetAsync("/test?foo=baz").Result.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
       }
