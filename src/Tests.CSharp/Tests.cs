@@ -99,12 +99,12 @@ namespace Tests.CSharp
       using (var fakeService = new FakeService())
       using (var httpClient = HttpClient(fakeService.Start()))
       {
-        fakeService.AddResponse("/test", Method.GET, Response.WithHeaders(200, "foo   :   bar", "bing:bong"));
+        fakeService.AddResponse("/test", Method.GET, Response.WithHeaders(200, "foo   :   bar", "bing::bong"));
         var result = httpClient.GetAsync("/test").Result;
         Assert.That(result.Headers.First().Key, Is.EqualTo("foo"));
         Assert.That(result.Headers.First().Value.First(), Is.EqualTo("bar"));
         Assert.That(result.Headers.ElementAt(1).Key, Is.EqualTo("bing"));
-        Assert.That(result.Headers.ElementAt(1).Value.First(), Is.EqualTo("bong"));
+        Assert.That(result.Headers.ElementAt(1).Value.First(), Is.EqualTo(":bong"));
       }
     }
 

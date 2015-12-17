@@ -30,7 +30,7 @@ type Request =
 [<AutoOpen>]
 module private ResponseHelpers = 
   let mapHeaders headers = headers |> Seq.map (fun (KeyValue(k, v)) -> k, v)
-  let parseHeader header = Regex.Match(header, "([^\s]+)\s*:\s*([^\s]+)") |> fun x -> x.Groups.[1].Value, x.Groups.[2].Value
+  let parseHeader header = Regex.Match(header, "([^\s]+?)\s*:\s*([^\s]+)") |> fun x -> x.Groups.[1].Value, x.Groups.[2].Value
   
   let parseResponse (response : string) = 
     let lines = Regex.Split(response, "\r?\n")
