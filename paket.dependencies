@@ -1,9 +1,10 @@
 source https://nuget.org/api/v2
 
 nuget FAKE
+nuget FSharp.Core
 nuget Microsoft.Net.Http
 nuget Microsoft.Owin
 nuget Microsoft.Owin.Host.HttpListener
 nuget Microsoft.Owin.Hosting
-nuget NUnit
-nuget NUnit.Runners
+nuget NUnit < 3
+nuget NUnit.Runners < 3
