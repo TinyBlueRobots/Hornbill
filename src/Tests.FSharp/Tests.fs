@@ -4,6 +4,7 @@ open Hornbill.FSharp
 open System.Net.Http
 open System.Net
 open Hornbill
+open System.Threading
 
 let createFakeService() = 
   let fakeService = new FakeService()
@@ -32,3 +33,12 @@ let dlg() =
   let fakeService, httpClient = createFakeService()
   Response.withDelegate (fun x -> Response.withStatusCode 200) |> fakeService.AddResponse "/foo" Method.GET
   httpClient.GetAsync("/foo").Result.StatusCode == HttpStatusCode.OK
+
+[<Test>]
+let evnt() =
+  let fakeService, httpClient = createFakeService()
+  Response.WithStatusCode 200 |> fakeService.AddResponse "/foo" Method.GET
+  let autoResetEvent = new AutoResetEvent false
+  fakeService.RequestReceived.Add(fun x -> if x.Request.Path = "/foo" then autoResetEvent.Set() |> ignore)
+  httpClient.GetAsync("/foo").Result.StatusCode == HttpStatusCode.OK
+  autoResetEvent.WaitOne 1000 == true

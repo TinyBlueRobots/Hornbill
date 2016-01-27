@@ -18,7 +18,7 @@ type FakeService() =
   let requests = ResizeArray<_>()
   let tryFindKey path methd = responses.Keys |> Seq.tryFind (fun (p, m) -> m = methd && Regex.IsMatch(path, p, RegexOptions.IgnoreCase))
   let mutable url = ""
-  let requestReceived = new Event<RequestReceivedEventHandler, RequestReceivedEventArgs>()
+  let requestReceived = Event<RequestReceivedEventHandler, RequestReceivedEventArgs>()
   
   let findResponse (path, methd) = 
     match tryFindKey path methd with
