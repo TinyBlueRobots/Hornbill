@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using Hornbill;
 using NUnit.Framework;
+using System.Threading;
 
 namespace Tests.CSharp
 {
@@ -86,7 +87,7 @@ namespace Tests.CSharp
       using (var fakeService = new FakeService())
       using (var httpClient = HttpClient(fakeService.Start()))
       {
-        fakeService.AddResponse("/test", Method.GET, Response.WithHeaders(200, new Dictionary<string, string> {["foo"] = "bar" }));
+        fakeService.AddResponse("/test", Method.GET, Response.WithHeaders(200, new Dictionary<string, string> { ["foo"] = "bar" }));
         var result = httpClient.GetAsync("/test").Result;
         Assert.That(result.Headers.First().Key, Is.EqualTo("foo"));
         Assert.That(result.Headers.First().Value.First(), Is.EqualTo("bar"));
@@ -133,13 +134,13 @@ namespace Tests.CSharp
     }
 
     [Test]
-    public void HeadersAndBody() 
+    public void HeadersAndBody()
     {
       using (var fakeService = new FakeService())
       using (var httpClient = HttpClient(fakeService.Start()))
       {
         const string link = "http://foo/bar";
-        fakeService.AddResponse("/headers", Method.GET, Response.WithBodyAndHeaders(200, "body", new Dictionary<string, string> {["Link"] = link } ));
+        fakeService.AddResponse("/headers", Method.GET, Response.WithBodyAndHeaders(200, "body", new Dictionary<string, string> { ["Link"] = link }));
         httpClient.DefaultRequestHeaders.Add("Foo", "Bar");
         var result = httpClient.GetAsync("/headers").Result;
         Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
@@ -207,6 +208,23 @@ namespace Tests.CSharp
       var fakeService = new FakeService();
       Assert.Throws<Exception>(delegate { var x = fakeService.Uri; }, "Service not started");
       fakeService.Stop();
+    }
+
+    [Test]
+    public void Request_received_event()
+    {
+      var autoResetEvent = new AutoResetEvent(false);
+      using (var fakeService = new FakeService())
+      using (var httpClient = HttpClient(fakeService.Start()))
+      {
+        fakeService.AddResponse("/foo", Method.GET, Response.WithStatusCode(200));
+        fakeService.RequestReceived += (_, a) =>
+        {
+          if (a.Request.Path == "/foo") { autoResetEvent.Set(); }
+        };
+        httpClient.GetAsync("/foo").Result.EnsureSuccessStatusCode();
+        Assert.That(autoResetEvent.WaitOne(1000), Is.True);
+      }
     }
   }
 }

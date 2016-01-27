@@ -33,8 +33,9 @@ let responseHandler ctx =
     |> withStatusCode 404
     |> send
 
-let handler storeRequest findResponse setResponse ctx = 
+let handler storeRequest findResponse setResponse requestReceived ctx = 
   let request = ctx |> toRequest
+  requestReceived request
   storeRequest request
   let key = ctx |> responseKey
   match findResponse key with
@@ -46,5 +47,5 @@ let handler storeRequest findResponse setResponse ctx =
   | _ -> Response.WithStatusCode 404
   |> responseHandler ctx
 
-let app storeRequest findResponse setResponse (app : IAppBuilder) = 
-  Func<_, _>(handler storeRequest findResponse setResponse) |> app.Run
+let app storeRequest findResponse setResponse requestReceived (app : IAppBuilder) = 
+  Func<_, _>(handler storeRequest findResponse setResponse requestReceived) |> app.Run
