@@ -64,6 +64,8 @@ Calling `fakeService.Start()` to host on a random available port. The address is
 
 You can examine the requests sent to your service via `fakeService.Requests`
 
+You can execute an `Action<Request>` when a request is received by using `fakeService.OnRequestReceived(request => ...)`
+
 #### Address
 
 The address is returned from `fakeService.Start()` and is also available as a `string` `fakeService.Url` or `Uri` `fakeService.Uri`
