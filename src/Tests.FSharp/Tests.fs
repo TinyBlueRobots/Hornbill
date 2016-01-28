@@ -39,6 +39,6 @@ let evnt() =
   let fakeService, httpClient = createFakeService()
   Response.WithStatusCode 200 |> fakeService.AddResponse "/foo" Method.GET
   let autoResetEvent = new AutoResetEvent false
-  fakeService.RequestReceived.Add(fun x -> if x.Request.Path = "/foo" then autoResetEvent.Set() |> ignore)
+  fakeService.OnRequestReceived(fun x -> if x.Path = "/foo" then autoResetEvent.Set() |> ignore)
   httpClient.GetAsync("/foo").Result.StatusCode == HttpStatusCode.OK
   autoResetEvent.WaitOne 1000 == true

@@ -218,10 +218,10 @@ namespace Tests.CSharp
       using (var httpClient = HttpClient(fakeService.Start()))
       {
         fakeService.AddResponse("/foo", Method.GET, Response.WithStatusCode(200));
-        fakeService.RequestReceived += (_, a) =>
+        fakeService.OnRequestReceived (request =>
         {
-          if (a.Request.Path == "/foo") { autoResetEvent.Set(); }
-        };
+          if (request.Path == "/foo") { autoResetEvent.Set(); }
+        });
         httpClient.GetAsync("/foo").Result.EnsureSuccessStatusCode();
         Assert.That(autoResetEvent.WaitOne(1000), Is.True);
       }

@@ -7,18 +7,12 @@ open System.Collections.Generic
 open System.Text.RegularExpressions
 open Microsoft.Owin.Hosting
 
-type RequestReceivedEventArgs(request) = 
-  inherit EventArgs()
-  member __.Request : Request = request
-
-type RequestReceivedEventHandler = delegate of obj * RequestReceivedEventArgs -> unit
-
 type FakeService() = 
   let responses = Dictionary<_, _>()
   let requests = ResizeArray<_>()
   let tryFindKey path methd = responses.Keys |> Seq.tryFind (fun (p, m) -> m = methd && Regex.IsMatch(path, p, RegexOptions.IgnoreCase))
   let mutable url = ""
-  let requestReceived = Event<RequestReceivedEventHandler, RequestReceivedEventArgs>()
+  let requestReceived = Event<Request>()
   
   let findResponse (path, methd) = 
     match tryFindKey path methd with
@@ -41,8 +35,7 @@ type FakeService() =
     { new IDisposable with
         member __.Dispose() = () }
   
-  [<CLIEvent>]
-  member __.RequestReceived = requestReceived.Publish
+  member __.OnRequestReceived(f : Action<Request>) = requestReceived.Publish.Add f.Invoke
   
   member __.AddResponse (path : string) verb response = 
     let formatter : Printf.StringFormat<_> = 
@@ -60,11 +53,9 @@ type FakeService() =
   
   member this.Uri = Uri this.Url
   
-  member __.Start() =
-    let requestReceived request =
-      requestReceived.Trigger(null, RequestReceivedEventArgs(request))
+  member __.Start() = 
     url <- findPort() |> sprintf "http://localhost:%i"
-    webApp <- WebApp.Start(url, Middleware.app requests.Add findResponse setResponse requestReceived)
+    webApp <- WebApp.Start(url, Middleware.app requests.Add findResponse setResponse requestReceived.Trigger)
     url
   
   [<Obsolete"Use Start()">]
