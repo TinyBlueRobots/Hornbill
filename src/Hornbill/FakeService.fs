@@ -15,6 +15,7 @@ type FakeService() =
   let requestReceived = Event<Request>()
   
   let findResponse (path, methd) = 
+    let path = if Regex.IsMatch(path, ":/[^/]") then path.Replace(":/", "://") else path
     match tryFindKey path methd with
     | Some key -> Some responses.[key]
     | _ -> None
@@ -37,7 +38,7 @@ type FakeService() =
   
   member __.OnRequestReceived(f : Action<Request>) = requestReceived.Publish.Add f.Invoke
   
-  member __.AddResponse (path : string) verb response = 
+  member __.AddResponse (path : string) verb response =
     let formatter : Printf.StringFormat<_> = 
       match path.StartsWith "/", path.EndsWith "$" with
       | false, false -> "/%s$"
