@@ -5,7 +5,7 @@ authors Tiny Blue Robots
 description Easily create fake HTTP endpoints for integration testing
 iconUrl https://dl.dropboxusercontent.com/u/11302680/nuget/hornbill.gif
 projectUrl https://github.com/TinyBlueRobots/Hornbill
-tags HTTP testing integration OWIN stub fake test web
+tags HTTP Testing Integration OWIN Stub Fake Test Web
 files
   bin/Release/Hornbill.* ==> lib
 dependencies
