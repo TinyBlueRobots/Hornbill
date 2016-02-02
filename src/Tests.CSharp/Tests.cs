@@ -195,8 +195,7 @@ namespace Tests.CSharp
             using (var fakeService = new FakeService())
             using (var httpClient = HttpClient(fakeService.Start()))
             {
-                var assemblyDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                var path = Path.Combine(assemblyDir, "resources\\rawresponse.txt");
+                var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "resources\\rawresponse.txt");
                 fakeService.AddResponse("/", Method.GET, Response.WithFile(path));
                 var result = httpClient.GetAsync("/").Result;
                 var body = result.Content.ReadAsStringAsync().Result;

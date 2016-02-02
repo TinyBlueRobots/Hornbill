@@ -20,7 +20,7 @@ let toRequest (ctx : IOwinContext) =
     Headers = Dictionary ctx.Request.Headers
     Query = 
       ctx.Request.Query
-      |> Seq.map (fun x -> x.Key, x.Value)
+      |> Seq.map (fun (KeyValue(k, v)) -> k, v)
       |> dict }
 
 let responseKey ctx = ctx |> requestUri, ctx |> requestMethod
