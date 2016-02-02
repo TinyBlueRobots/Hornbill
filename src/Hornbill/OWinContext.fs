@@ -1,4 +1,4 @@
-﻿module OWinContext
+﻿module internal OWinContext
 
 open System
 open Microsoft.Owin

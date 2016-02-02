@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Reflection;
 using Hornbill;
 using NUnit.Framework;
 using System.Threading;
@@ -193,7 +195,9 @@ namespace Tests.CSharp
             using (var fakeService = new FakeService())
             using (var httpClient = HttpClient(fakeService.Start()))
             {
-                fakeService.AddResponse("/", Method.GET, Response.WithFile(".\\Resources\\rawResponse.txt"));
+                var assemblyDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                var path = Path.Combine(assemblyDir, "resources\\rawresponse.txt");
+                fakeService.AddResponse("/", Method.GET, Response.WithFile(path));
                 var result = httpClient.GetAsync("/").Result;
                 var body = result.Content.ReadAsStringAsync().Result;
                 Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
@@ -204,18 +208,10 @@ namespace Tests.CSharp
         }
 
         [Test]
-        public void Host_not_started_Exception_thrown_when_getting_url()
-        {
-            var fakeService = new FakeService();
-            var ex = Assert.Throws<Exception>(delegate { var x = fakeService.Url; });
-            Assert.That(ex.Message, Is.EqualTo("Service not started"));
-        }
-
-        [Test]
         public void Host_not_started_exception_thrown_when_getting_uri()
         {
             var fakeService = new FakeService();
-            Assert.Throws<Exception>(delegate { var x = fakeService.Uri; }, "Service not started");
+            Assert.Throws<Exception>(delegate { var _ = fakeService.Uri; }, "Service not started");
             fakeService.Stop();
         }
 

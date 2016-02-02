@@ -23,7 +23,7 @@ Target "Build" <| fun () ->
 Target "Test" <| fun () -> 
   let tests = !!"src/**/bin/Release/Tests*.dll"
   
-  let nUnitParams p : NUnit3Params = { p with TimeOut = System.TimeSpan.FromMinutes 10. }
+  let nUnitParams _ = NUnit3Defaults
   try 
     tests |> NUnit3 nUnitParams
   finally
