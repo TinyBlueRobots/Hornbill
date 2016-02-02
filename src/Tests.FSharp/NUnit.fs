@@ -3,14 +3,14 @@ module NUnit
 
 open NUnit.Framework
 
-let private assrt assertion actual expected = assertion(box expected, box actual, sprintf "Expected: %+A%sActual: %+A" expected System.Environment.NewLine actual)
-let (==) actual expected = assrt Assert.AreEqual actual expected 
-let (!=) actual expected = assrt Assert.AreNotEqual actual expected 
- 
+let private assrt actual expected assertion = assertion (box expected, box actual, sprintf "Expected: %+A%sActual: %+A" expected System.Environment.NewLine actual)
+let (==) actual expected = assrt actual expected Assert.AreEqual
+let (!=) actual expected = assrt actual expected <| fun (x, y, z) -> Assert.AreNotEqual(x, y, z)
+
 type Test = TestAttribute
 
-type SetUp = TestFixtureSetUpAttribute
+type SetUp = OneTimeSetUpAttribute
 
-type TearDown = TestFixtureTearDownAttribute
+type TearDown = OneTimeTearDownAttribute
 
 type Explicit = ExplicitAttribute

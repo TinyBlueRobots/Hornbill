@@ -6,5 +6,5 @@ nuget Microsoft.Net.Http
 nuget Microsoft.Owin
 nuget Microsoft.Owin.Host.HttpListener
 nuget Microsoft.Owin.Hosting
-nuget NUnit < 3
-nuget NUnit.Runners < 3
+nuget NUnit
+nuget NUnit.Runners

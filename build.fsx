@@ -1,6 +1,7 @@
 #r "packages/FAKE/tools/FakeLib.dll"
 
 open Fake
+open Fake.Testing.NUnit3
 
 let solutionFile = !!"*.sln" |> Seq.head
 
@@ -22,14 +23,12 @@ Target "Build" <| fun () ->
 Target "Test" <| fun () -> 
   let tests = !!"src/**/bin/Release/Tests*.dll"
   
-  let nUnitParams p = 
-    { p with DisableShadowCopy = true
-             TimeOut = System.TimeSpan.FromMinutes 10. }
+  let nUnitParams p : NUnit3Params = { p with TimeOut = System.TimeSpan.FromMinutes 10. }
   try 
-    tests |> NUnit nUnitParams
+    tests |> NUnit3 nUnitParams
   finally
     if not isLocalBuild then AppVeyor.UploadTestResultsXml AppVeyor.TestResultsType.NUnit currentDirectory
-
+    
 Target "Nuget" <| fun () -> 
   let version = getUserInput "Version : "
   let apiKey = getUserInput "ApiKey : "
