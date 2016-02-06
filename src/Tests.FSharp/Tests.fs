@@ -7,7 +7,7 @@ open Hornbill
 open System.Threading
 
 let createFakeService() = 
-  let fakeService = new FakeService()
+  let fakeService = new FakeService(0)
   fakeService.Start() |> ignore
   let httpClient = new HttpClient(BaseAddress = fakeService.Uri)
   fakeService, httpClient

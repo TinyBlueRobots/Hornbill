@@ -7,7 +7,7 @@ open System.Collections.Generic
 open System.Text.RegularExpressions
 open Microsoft.Owin.Hosting
 
-type FakeService() = 
+type FakeService(port) =
   let responses = Dictionary<_, _>()
   let requests = ResizeArray<_>()
   let tryFindKey path methd = responses.Keys |> Seq.tryFind (fun (p, m) -> m = methd && Regex.IsMatch(path, p, RegexOptions.IgnoreCase))
@@ -31,10 +31,14 @@ type FakeService() =
       (l, (l.LocalEndpoint :?> IPEndPoint).Port) |> fun (l, p) -> 
         l.Stop()
         p
+
+  let port = if port = 0 then findPort() else port
   
   let mutable webApp = 
     { new IDisposable with
         member __.Dispose() = () }
+  
+  new() = new FakeService 0
   
   member __.OnRequestReceived(f : Action<Request>) = requestReceived.Publish.Add f.Invoke
   
@@ -56,7 +60,6 @@ type FakeService() =
   
   member __.Start() =
     let createHost =
-      let port = findPort()
       fun name -> sprintf "http://%s:%i" name port
     url <- createHost "localhost"
     webApp <- WebApp.Start(createHost "*", Middleware.app requests.Add findResponse setResponse requestReceived.Trigger)
