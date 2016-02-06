@@ -72,5 +72,14 @@ namespace Tests.CSharp {
                 return ResourceManager.GetString("rawResponse", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string responses {
+            get {
+                return ResourceManager.GetString("responses", resourceCulture);
+            }
+        }
     }
 }

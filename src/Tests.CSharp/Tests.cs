@@ -257,5 +257,25 @@ namespace Tests.CSharp
                 Assert.That(httpClient.GetAsync("/foo").Result.IsSuccessStatusCode, Is.True);
             }
         }
+
+        [Test]
+        public void Responses_from_file()
+        {
+            using (var fakeService = new FakeService())
+            using (var httpClient = HttpClient(fakeService.Start()))
+            {
+                var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "resources\\responses.txt");
+                fakeService.AddResponses(path);
+
+                Assert.That(httpClient.GetAsync("/statuscode").Result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+
+                Assert.That(httpClient.GetAsync("/headers").Result.Headers.First(x => x.Key == "foo").Value.First(), Is.EqualTo("bar"));
+
+                Assert.That(httpClient.GetAsync("/body").Result.Content.ReadAsStringAsync().Result, Is.EqualTo("body"));
+
+                Assert.That(httpClient.GetAsync("/bodyandheaders").Result.Content.ReadAsStringAsync().Result, Is.EqualTo("body"));
+                Assert.That(httpClient.GetAsync("/bodyandheaders").Result.Headers.First(x => x.Key == "foo").Value.First(), Is.EqualTo("bar"));
+            }
+        }
     }
 }

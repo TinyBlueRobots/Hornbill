@@ -6,6 +6,7 @@ open System.Net
 open System.Collections.Generic
 open System.Text.RegularExpressions
 open Microsoft.Owin.Hosting
+open System.IO
 
 type FakeService(port) =
   let responses = Dictionary<_, _>()
@@ -50,6 +51,11 @@ type FakeService(port) =
       | true, false -> "%s$"
       | _ -> "%s"
     responses.Add((sprintf formatter path, verb), response)
+  
+  member this.AddResponses filePath =
+    for parsedRequest in File.ReadAllText filePath |> ResponsesParser.parseApi do
+      let response = ResponsesParser.mapToResponse parsedRequest
+      this.AddResponse parsedRequest.Path parsedRequest.Method response
   
   member __.Url = 
     match url with

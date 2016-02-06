@@ -60,10 +60,11 @@
   <ItemGroup>
     <None Include="paket.references" />
     <Compile Include="Hornbill.fs" />
+    <Compile Include="FSharp.fs" />
     <Compile Include="OWinContext.fs" />
     <Compile Include="Middleware.fs" />
+    <Compile Include="ResponsesParser.fs" />
     <Compile Include="FakeService.fs" />
-    <Compile Include="FSharp.fs" />
     <None Include="paket.template" />
   </ItemGroup>
   <ItemGroup>
