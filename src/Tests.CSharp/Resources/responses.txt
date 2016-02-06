@@ -1,0 +1,20 @@
+GET statuscode
+200
+
+
+GET headers
+200
+foo:bar
+
+
+GET body
+200
+
+body
+
+
+GET bodyandheaders
+200
+foo:bar
+
+body
