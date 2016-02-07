@@ -9,10 +9,10 @@ let private methodAndPath s =
   let mtch = Regex.Match(s, "^(GET|POST|PUT|OPTIONS|HEAD|DELETE|TRACE)\s(.+)")
   mtch.Groups.[1].Value, mtch.Groups.[2].Value
 
-type private ExpectingLine = 
+type private State = 
+  | Empty
   | MethodAndPath
   | StatusCode
-  | Headers
   | Body
 
 type private PartialReqRep = 
@@ -21,7 +21,7 @@ type private PartialReqRep =
     Headers : (string * string) list option
     Body : string option
     Method : string option
-    ExpectingLine : ExpectingLine }
+    State : State }
 
 type internal ParsedReqRep = 
   { Path : string
@@ -58,28 +58,27 @@ let internal parseApi input =
     else 
       let partialReqRep = 
         match lines.Head with
-        | "" when partialReqRep.ExpectingLine = MethodAndPath -> partialReqRep
-        | line when partialReqRep.ExpectingLine = MethodAndPath -> 
+        | "" when partialReqRep.State = Empty -> partialReqRep //consume empty lines
+        | line when partialReqRep.State = Empty -> 
           let methd, path = methodAndPath line
           { partialReqRep with Path = Some path
                                Method = Some methd
-                               ExpectingLine = StatusCode }
-        | line when partialReqRep.ExpectingLine = StatusCode -> 
+                               State = MethodAndPath }
+        | line when partialReqRep.State = MethodAndPath -> 
           { partialReqRep with StatusCode = 
                                  Regex.Match(line, "\d{3}").Value
                                  |> int
                                  |> Some
-                               ExpectingLine = Headers }
-        | line when partialReqRep.ExpectingLine = Headers && line.Length > 0 -> 
+                               State = StatusCode }
+        | line when partialReqRep.State = StatusCode && line.Length > 0 -> 
           let header = Regex.Match(line, "([^\s]+?)\s*:\s*([^\s]+)") |> fun x -> x.Groups.[1].Value, x.Groups.[2].Value
-          
           let headers = 
             match partialReqRep.Headers with
             | None -> [ header ]
             | Some headers -> header :: headers
           { partialReqRep with Headers = Some headers }
-        | "" when partialReqRep.ExpectingLine = Headers -> { partialReqRep with ExpectingLine = Body }
-        | "" when partialReqRep.ExpectingLine = Body -> partialReqRep
+        | "" when partialReqRep.State = StatusCode -> { partialReqRep with State = Body } //consume empty line before body
+        | "" when partialReqRep.State = Body -> partialReqRep //consume trailing lines
         | line -> 
           let body = 
             match partialReqRep.Body with
@@ -94,5 +93,5 @@ let internal parseApi input =
                         Headers = None
                         Body = None
                         Method = None
-                        ExpectingLine = MethodAndPath })
+                        State = Empty })
   |> Array.map mapToParsedReqRep
