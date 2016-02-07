@@ -39,22 +39,32 @@ Easy http stubs for integration testing
 
 `fakeService.AddResponse("/foo", Method.GET, Response.WithDelegate(x => x.Query["foo"].Contains("bar") ? Response.WithStatusCode(200) : Response.WithStatusCode(404)))`
 
-##### Raw
+##### Add responses from text
 
 Requires a string in this format
 ```
+GET path
 200
 foo: bar
 
 Body
+
+
+POST path
+200
 ```
-`fakeService.AddResponse("/foo", Method.GET, Response.WithRawResponse(Resources.rawResponse))`
 
-##### File
+`fakeService.AddResponsesFromText(text)`
 
-The same as raw, but takes a file name instead of a string
+* Headers and body are optional
+* Separate the body with a single line break
+* Separate each response with a double line break 
 
-`fakeService.AddResponse("/", Method.GET, Response.WithFile(".\\Resources\\rawResponse.txt"));`
+##### Add responses from file
+
+The same as above, but takes a file name instead of a string
+
+`fakeService.AddResponsesFromFile(fileName)`
 
 #### Starting the service
 
