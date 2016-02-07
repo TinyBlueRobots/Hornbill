@@ -78,7 +78,10 @@ let internal parse input =
           match statusCode with
           | "" -> InvalidStatusCode line |> raise
           | _ -> 
-            { partialReqRep with StatusCode = statusCode |> int |> Some
+            { partialReqRep with StatusCode = 
+                                   statusCode
+                                   |> int
+                                   |> Some
                                  State = StatusCode }
         | line when partialReqRep.State = StatusCode && line.Length > 0 -> 
           let header = Regex.Match(line, "([^\s]+?)\s*:\s*([^\s]+)") |> fun x -> x.Groups.[1].Value, x.Groups.[2].Value
@@ -97,12 +100,15 @@ let internal parse input =
             | _ -> Some line
           { partialReqRep with Body = body }
       parse partialReqRep lines.Tail
-  Regex.Split(input, "\r?\n\r?\n\r?\n")
-  |> Array.map (fun x -> Regex.Split(x, "\r?\n") |> Array.toList)
-  |> Array.map (parse { Path = None
-                        StatusCode = None
-                        Headers = None
-                        Body = None
-                        Method = None
-                        State = Empty })
-  |> Array.map mapToParsedReqRep
+  match input with
+  | "" -> [||]
+  | _ -> 
+    Regex.Split(input, "\r?\n\r?\n\r?\n")
+    |> Array.map (fun x -> Regex.Split(x, "\r?\n") |> Array.toList)
+    |> Array.map (parse { Path = None
+                          StatusCode = None
+                          Headers = None
+                          Body = None
+                          Method = None
+                          State = Empty })
+    |> Array.map mapToParsedReqRep

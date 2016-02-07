@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Reflection;
 using Hornbill;
 using NUnit.Framework;
 using System.Threading;
@@ -13,7 +12,7 @@ namespace Tests.CSharp
 {
     public class Tests
     {
-        HttpClient HttpClient(string uri)
+        static HttpClient HttpClient(string uri)
         {
             return new HttpClient {BaseAddress = new Uri(uri)};
         }

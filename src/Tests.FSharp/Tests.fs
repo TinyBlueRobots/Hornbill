@@ -76,6 +76,11 @@ let ``throws when parsing responses with invalid path``() =
   assertThrows<InvalidMethodAndPath> (fun () -> fakeService.AddResponsesFromText text) "FOO path"
 
 [<Test>]
+let ``does not throw when parsing empty responses``() = 
+  let fakeService = new FakeService()
+  assertDoesNotThrow (fun () -> fakeService.AddResponsesFromText "")
+
+[<Test>]
 let ``throws when parsing responses with invalid status code``() = 
   let text = """
 GET path

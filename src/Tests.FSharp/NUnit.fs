@@ -18,3 +18,5 @@ type Explicit = ExplicitAttribute
 type TestCase = TestCaseAttribute
 
 let assertThrows<'T when 'T :> exn> f message = Assert.Throws<'T>(TestDelegate f, message) |> ignore
+
+let assertDoesNotThrow f = Assert.DoesNotThrow(TestDelegate f)
