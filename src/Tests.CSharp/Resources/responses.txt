@@ -12,6 +12,7 @@ GET body
 200
 
 body
+text
 
 
 GET bodyandheaders

@@ -5,18 +5,23 @@ open System
 open Hornbill
 open Hornbill.FSharp
 
-let methodAndPath s = 
+let private methodAndPath s = 
   let mtch = Regex.Match(s, "^(GET|POST|PUT|OPTIONS|HEAD|DELETE|TRACE)\s(.+)")
   mtch.Groups.[1].Value, mtch.Groups.[2].Value
 
-type State = Empty | MethodAndPath | StatusCode | Headers | Body
+type private ExpectingLine = 
+  | MethodAndPath
+  | StatusCode
+  | Headers
+  | Body
 
 type private PartialReqRep = 
   { Path : string option
     StatusCode : int option
     Headers : (string * string) list option
     Body : string option
-    Method : string option }
+    Method : string option
+    ExpectingLine : ExpectingLine }
 
 type internal ParsedReqRep = 
   { Path : string
@@ -51,36 +56,43 @@ let internal parseApi input =
   let rec parse (partialReqRep : PartialReqRep) lines = 
     if lines = [] then partialReqRep
     else 
-      let request = 
+      let partialReqRep = 
         match lines.Head with
-        | "" when partialReqRep.Path = None -> partialReqRep                     //consume empty lines
-        | line when partialReqRep.Path = None ->                                //path not set, so line is method and path
+        | "" when partialReqRep.ExpectingLine = MethodAndPath -> partialReqRep
+        | line when partialReqRep.ExpectingLine = MethodAndPath -> 
           let methd, path = methodAndPath line
           { partialReqRep with Path = Some path
-                                      Method = Some methd }
-        | line when partialReqRep.StatusCode = None ->                          //next line is status code
-          { partialReqRep with StatusCode = Regex.Match(line, "\d{3}").Value |> int |> Some }
-        | line when partialReqRep.Body = None && line.Length > 0 ->             //body is empty, line is not empty, so line is header
+                               Method = Some methd
+                               ExpectingLine = StatusCode }
+        | line when partialReqRep.ExpectingLine = StatusCode -> 
+          { partialReqRep with StatusCode = 
+                                 Regex.Match(line, "\d{3}").Value
+                                 |> int
+                                 |> Some
+                               ExpectingLine = Headers }
+        | line when partialReqRep.ExpectingLine = Headers && line.Length > 0 -> 
           let header = Regex.Match(line, "([^\s]+?)\s*:\s*([^\s]+)") |> fun x -> x.Groups.[1].Value, x.Groups.[2].Value
+          
           let headers = 
             match partialReqRep.Headers with
             | None -> [ header ]
             | Some headers -> header :: headers
           { partialReqRep with Headers = Some headers }
-        | "" when partialReqRep.Body.IsSome -> partialReqRep                          //consume trailing lines after body
-        | line ->                                                         //set body
+        | "" when partialReqRep.ExpectingLine = Headers -> { partialReqRep with ExpectingLine = Body }
+        | "" when partialReqRep.ExpectingLine = Body -> partialReqRep
+        | line -> 
           let body = 
             match partialReqRep.Body with
             | Some body -> body + line |> Some
             | _ -> Some line
           { partialReqRep with Body = body }
-      parse request lines.Tail
+      parse partialReqRep lines.Tail
   Regex.Split(input, "\r?\n\r?\n\r?\n")
   |> Array.map (fun x -> Regex.Split(x, "\r?\n") |> Array.toList)
   |> Array.map (parse { Path = None
                         StatusCode = None
                         Headers = None
                         Body = None
-                        Method = None })
-  |> Array.map (fun x -> {x with Body = match x.Body with None | Some "" -> None | _ -> x.Body} )
+                        Method = None
+                        ExpectingLine = MethodAndPath })
   |> Array.map mapToParsedReqRep

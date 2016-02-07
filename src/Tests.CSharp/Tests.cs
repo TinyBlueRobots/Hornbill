@@ -272,7 +272,7 @@ namespace Tests.CSharp
                 Assert.That(httpClient.GetAsync("/headers").Result.Headers.First(x => x.Key == "foo").Value.First(), Is.EqualTo("bar"));
                 Assert.That(httpClient.GetAsync("/headers").Result.Headers.First(x => x.Key == "bing").Value.First(), Is.EqualTo("bong"));
 
-                Assert.That(httpClient.GetAsync("/body").Result.Content.ReadAsStringAsync().Result, Is.EqualTo("body"));
+                Assert.That(httpClient.GetAsync("/body").Result.Content.ReadAsStringAsync().Result, Is.EqualTo("bodytext"));
 
                 Assert.That(httpClient.GetAsync("/bodyandheaders").Result.Content.ReadAsStringAsync().Result, Is.EqualTo("body"));
                 Assert.That(httpClient.GetAsync("/bodyandheaders").Result.Headers.First(x => x.Key == "foo").Value.First(), Is.EqualTo("bar"));
