@@ -39,7 +39,7 @@ Easy http stubs for integration testing
 
 `fakeService.AddResponse("/foo", Method.GET, Response.WithDelegate(x => x.Query["foo"].Contains("bar") ? Response.WithStatusCode(200) : Response.WithStatusCode(404)))`
 
-##### Add responses from text
+#### Add responses from text
 
 Requires a string in this format
 ```
@@ -60,7 +60,7 @@ POST path
 * Separate the body with a single line break
 * Separate each response with a double line break 
 
-##### Add responses from file
+#### Add responses from file
 
 The same as above, but takes a file name instead of a string
 
