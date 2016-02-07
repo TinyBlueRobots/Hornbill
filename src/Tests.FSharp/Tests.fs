@@ -30,17 +30,18 @@ let headers() =
   fakeService.Stop()
 
 [<Test>]
-let dlg() =
+let dlg() = 
   let fakeService, httpClient = createFakeService()
-  Response.withDelegate (fun x -> Response.withStatusCode 200) |> fakeService.AddResponse "/foo" Method.GET
+  Response.withDelegate (fun _ -> Response.withStatusCode 200) |> fakeService.AddResponse "/foo" Method.GET
   httpClient.GetAsync("/foo").Result.StatusCode == HttpStatusCode.OK
 
 [<Test>]
-let evnt() =
+let evnt() = 
   let fakeService, httpClient = createFakeService()
   Response.WithStatusCode 200 |> fakeService.AddResponse "/foo" Method.GET
   let autoResetEvent = new AutoResetEvent false
-  fakeService.OnRequestReceived(fun x -> if x.Path = "/foo" then autoResetEvent.Set() |> ignore)
+  fakeService.OnRequestReceived(fun x -> 
+    if x.Path = "/foo" then autoResetEvent.Set() |> ignore)
   httpClient.GetAsync("/foo").Result.StatusCode == HttpStatusCode.OK
   autoResetEvent.WaitOne 1000 == true
 
@@ -51,8 +52,8 @@ let evnt() =
 [<TestCase("HEAD")>]
 [<TestCase("DELETE")>]
 [<TestCase("TRACE")>]
-let ``parsing responses supports all methods`` methd =
-  let text= """
+let ``parsing responses supports all methods`` methd = 
+  let text = """
 GET statuscode
 200
 """
@@ -63,32 +64,32 @@ GET statuscode
   response.StatusCode == HttpStatusCode.OK
 
 [<Test>]
-let ``throws when parsing responses with invalid method``() =
+let ``throws when parsing responses with invalid method``() = 
   let text = "FOO path"
-  let fakeService = new FakeService() 
-  assertThrows<InvalidMethodAndPath>(fun () -> fakeService.AddResponsesFromText text) "FOO path"
- 
+  let fakeService = new FakeService()
+  assertThrows<InvalidMethodAndPath> (fun () -> fakeService.AddResponsesFromText text) "FOO path"
+
 [<Test>]
-let ``throws when parsing responses with invalid path``() =
+let ``throws when parsing responses with invalid path``() = 
   let text = "GET"
-  let fakeService = new FakeService() 
-  assertThrows<InvalidMethodAndPath>(fun () -> fakeService.AddResponsesFromText text) "FOO path"
-  
+  let fakeService = new FakeService()
+  assertThrows<InvalidMethodAndPath> (fun () -> fakeService.AddResponsesFromText text) "FOO path"
+
 [<Test>]
-let ``throws when parsing responses with invalid status code``() =
+let ``throws when parsing responses with invalid status code``() = 
   let text = """
 GET path
 foo
 """
-  let fakeService = new FakeService() 
-  assertThrows<InvalidStatusCode>(fun () -> fakeService.AddResponsesFromText text) "foo"
+  let fakeService = new FakeService()
+  assertThrows<InvalidStatusCode> (fun () -> fakeService.AddResponsesFromText text) "foo"
 
 [<Test>]
-let ``throws when parsing responses with invalid header``() =
+let ``throws when parsing responses with invalid header``() = 
   let text = """
 GET path
 200
 foo
 """
-  let fakeService = new FakeService() 
-  assertThrows<InvalidHeader>(fun () -> fakeService.AddResponsesFromText text) "foo"
+  let fakeService = new FakeService()
+  assertThrows<InvalidHeader> (fun () -> fakeService.AddResponsesFromText text) "foo"
