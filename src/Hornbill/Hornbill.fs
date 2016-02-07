@@ -30,7 +30,8 @@ type Request =
 [<AutoOpen>]
 module private ResponseHelpers = 
   let mapHeaders headers = headers |> Seq.map (fun (KeyValue(k, v)) -> k, v)
-  let parseHeader header = Regex.Match(header, "([^\s]+?)\s*:\s*([^\s]+)") |> fun x -> x.Groups.[1].Value, x.Groups.[2].Value
+  let parseHeader header = 
+    Regex.Match(header, "([^\s]+?)\s*:\s*([^\s]+)") |> fun x -> x.Groups.[1].Value, x.Groups.[2].Value
   
   let parseResponse (response : string) = 
     let lines = Regex.Split(response, "\r?\n")
@@ -64,7 +65,8 @@ type Response =
   static member WithStatusCode statusCode = StatusCode statusCode
   static member WithBody(statusCode, body) = Body(statusCode, body)
   static member WithBodyAndHeaders(statusCode, body, headers) = BodyAndHeaders(statusCode, body, headers |> mapHeaders)
-  static member WithBodyAndHeaders(statusCode, body, [<ParamArray>] headers) = BodyAndHeaders(statusCode, body, headers |> Array.map parseHeader)
+  static member WithBodyAndHeaders(statusCode, body, [<ParamArray>] headers) = 
+    BodyAndHeaders(statusCode, body, headers |> Array.map parseHeader)
   
   static member WithResponses responses = 
     responses

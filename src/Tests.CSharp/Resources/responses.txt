@@ -5,6 +5,7 @@ GET statuscode
 GET headers
 200
 foo:bar
+bing:bong
 
 
 GET body
@@ -18,3 +19,4 @@ GET bodyandheaders
 foo:bar
 
 body
+

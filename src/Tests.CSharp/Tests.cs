@@ -265,11 +265,12 @@ namespace Tests.CSharp
             using (var httpClient = HttpClient(fakeService.Start()))
             {
                 var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "resources\\responses.txt");
-                fakeService.AddResponses(path);
+                fakeService.AddResponsesFromFile(path);
 
                 Assert.That(httpClient.GetAsync("/statuscode").Result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
 
                 Assert.That(httpClient.GetAsync("/headers").Result.Headers.First(x => x.Key == "foo").Value.First(), Is.EqualTo("bar"));
+                Assert.That(httpClient.GetAsync("/headers").Result.Headers.First(x => x.Key == "bing").Value.First(), Is.EqualTo("bong"));
 
                 Assert.That(httpClient.GetAsync("/body").Result.Content.ReadAsStringAsync().Result, Is.EqualTo("body"));
 

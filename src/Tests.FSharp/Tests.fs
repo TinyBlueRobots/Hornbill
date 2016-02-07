@@ -5,6 +5,7 @@ open System.Net.Http
 open System.Net
 open Hornbill
 open System.Threading
+open System
 
 let createFakeService() = 
   let fakeService = new FakeService(0)
@@ -42,3 +43,21 @@ let evnt() =
   fakeService.OnRequestReceived(fun x -> if x.Path = "/foo" then autoResetEvent.Set() |> ignore)
   httpClient.GetAsync("/foo").Result.StatusCode == HttpStatusCode.OK
   autoResetEvent.WaitOne 1000 == true
+
+[<TestCase("GET")>]
+[<TestCase("POST")>]
+[<TestCase("PUT")>]
+[<TestCase("OPTIONS")>]
+[<TestCase("HEAD")>]
+[<TestCase("DELETE")>]
+[<TestCase("TRACE")>]
+let ``parsing responses supports all methods`` methd =
+  let text= """
+GET statuscode
+200
+"""
+  let text = text.Replace("GET", methd)
+  let fakeService, httpClient = createFakeService()
+  fakeService.AddResponsesFromText text
+  let response = (new HttpRequestMessage(HttpMethod methd, "statuscode") |> httpClient.SendAsync).Result
+  response.StatusCode == HttpStatusCode.OK

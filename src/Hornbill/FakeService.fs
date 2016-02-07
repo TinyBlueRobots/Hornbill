@@ -51,11 +51,14 @@ type FakeService(port) =
       | true, false -> "%s$"
       | _ -> "%s"
     responses.Add((sprintf formatter path, verb), response)
-  
-  member this.AddResponses filePath =
-    for parsedRequest in File.ReadAllText filePath |> ResponsesParser.parseApi do
+
+  member this.AddResponsesFromText text =
+   for parsedRequest in ResponsesParser.parseApi text do
       let response = ResponsesParser.mapToResponse parsedRequest
-      this.AddResponse parsedRequest.Path parsedRequest.Method response
+      this.AddResponse parsedRequest.Path parsedRequest.Method response 
+  
+  member this.AddResponsesFromFile filePath =
+    File.ReadAllText filePath |> this.AddResponsesFromText
   
   member __.Url = 
     match url with

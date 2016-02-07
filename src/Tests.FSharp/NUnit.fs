@@ -14,3 +14,5 @@ type SetUp = OneTimeSetUpAttribute
 type TearDown = OneTimeTearDownAttribute
 
 type Explicit = ExplicitAttribute
+
+type TestCase = TestCaseAttribute
