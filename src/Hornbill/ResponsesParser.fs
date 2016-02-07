@@ -5,9 +5,18 @@ open System
 open Hornbill
 open Hornbill.FSharp
 
+exception InvalidMethodAndPath of string
+
+exception InvalidStatusCode of string
+
+exception InvalidHeader of string
+
 let private methodAndPath s = 
   let mtch = Regex.Match(s, "^(GET|POST|PUT|OPTIONS|HEAD|DELETE|TRACE)\s(.+)")
-  mtch.Groups.[1].Value, mtch.Groups.[2].Value
+  let methd, path = mtch.Groups.[1].Value, mtch.Groups.[2].Value
+  match methd, path with
+  | "", "" -> InvalidMethodAndPath s |> raise
+  | _ -> methd, path
 
 type private State = 
   | Empty
@@ -52,7 +61,7 @@ let internal mapToResponse parsedReqRep =
   | RequestWithBodyAndHeaders -> 
     Response.withBodyAndHeaders parsedReqRep.StatusCode parsedReqRep.Body.Value parsedReqRep.Headers.Value
 
-let internal parseApi input = 
+let internal parse input = 
   let rec parse (partialReqRep : PartialReqRep) lines = 
     if lines = [] then partialReqRep
     else 
@@ -65,13 +74,15 @@ let internal parseApi input =
                                Method = Some methd
                                State = MethodAndPath }
         | line when partialReqRep.State = MethodAndPath -> 
-          { partialReqRep with StatusCode = 
-                                 Regex.Match(line, "\d{3}").Value
-                                 |> int
-                                 |> Some
-                               State = StatusCode }
+          let statusCode = Regex.Match(line, "\d{3}").Value
+          match statusCode with
+          | "" -> InvalidStatusCode line |> raise
+          | _ -> 
+            { partialReqRep with StatusCode = statusCode |> int |> Some
+                                 State = StatusCode }
         | line when partialReqRep.State = StatusCode && line.Length > 0 -> 
           let header = Regex.Match(line, "([^\s]+?)\s*:\s*([^\s]+)") |> fun x -> x.Groups.[1].Value, x.Groups.[2].Value
+          if header = ("", "") then InvalidHeader line |> raise
           let headers = 
             match partialReqRep.Headers with
             | None -> [ header ]

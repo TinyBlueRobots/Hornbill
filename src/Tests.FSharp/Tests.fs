@@ -5,7 +5,7 @@ open System.Net.Http
 open System.Net
 open Hornbill
 open System.Threading
-open System
+open ResponsesParser
 
 let createFakeService() = 
   let fakeService = new FakeService(0)
@@ -61,3 +61,34 @@ GET statuscode
   fakeService.AddResponsesFromText text
   let response = (new HttpRequestMessage(HttpMethod methd, "statuscode") |> httpClient.SendAsync).Result
   response.StatusCode == HttpStatusCode.OK
+
+[<Test>]
+let ``throws when parsing responses with invalid method``() =
+  let text = "FOO path"
+  let fakeService = new FakeService() 
+  assertThrows<InvalidMethodAndPath>(fun () -> fakeService.AddResponsesFromText text) "FOO path"
+ 
+[<Test>]
+let ``throws when parsing responses with invalid path``() =
+  let text = "GET"
+  let fakeService = new FakeService() 
+  assertThrows<InvalidMethodAndPath>(fun () -> fakeService.AddResponsesFromText text) "FOO path"
+  
+[<Test>]
+let ``throws when parsing responses with invalid status code``() =
+  let text = """
+GET path
+foo
+"""
+  let fakeService = new FakeService() 
+  assertThrows<InvalidStatusCode>(fun () -> fakeService.AddResponsesFromText text) "foo"
+
+[<Test>]
+let ``throws when parsing responses with invalid header``() =
+  let text = """
+GET path
+200
+foo
+"""
+  let fakeService = new FakeService() 
+  assertThrows<InvalidHeader>(fun () -> fakeService.AddResponsesFromText text) "foo"

@@ -53,7 +53,7 @@ type FakeService(port) =
     responses.Add((sprintf formatter path, verb), response)
 
   member this.AddResponsesFromText text =
-   for parsedRequest in ResponsesParser.parseApi text do
+   for parsedRequest in ResponsesParser.parse text do
       let response = ResponsesParser.mapToResponse parsedRequest
       this.AddResponse parsedRequest.Path parsedRequest.Method response 
   

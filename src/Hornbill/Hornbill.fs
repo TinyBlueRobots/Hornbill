@@ -74,5 +74,7 @@ type Response =
     |> Responses
   
   static member WithDelegate(func : Func<Request, Response>) = Dlg func.Invoke
+  [<Obsolete "Use FakeService.AddResponsesFromText">]
   static member WithRawResponse response = parseResponse response |> Response.WithBodyAndHeaders
+  [<Obsolete "Use FakeService.AddResponsesFromFile">]
   static member WithFile path = File.ReadAllText path |> Response.WithRawResponse
