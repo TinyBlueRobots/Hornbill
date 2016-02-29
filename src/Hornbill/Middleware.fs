@@ -38,14 +38,15 @@ let handler storeRequest findResponse setResponse requestReceived ctx =
   requestReceived request
   storeRequest request
   let key = ctx |> responseKey
-  match findResponse key with
-  | Some(Responses(response :: responses)) -> 
-    Responses responses |> setResponse key
-    response
-  | Some(Dlg dlg) -> dlg request
-  | Some response -> response
-  | _ -> Response.WithStatusCode 404
-  |> responseHandler ctx
+  let rec extractResponse =
+    function
+    | Some(Dlg dlg) -> dlg request |> Some |> extractResponse 
+    | Some(Responses(response :: responses)) ->
+      Responses responses |> setResponse key
+      Some response |> extractResponse
+    | Some response -> response
+    | _ -> Response.WithStatusCode 404
+  findResponse key |> extractResponse |> responseHandler ctx
 
 let app storeRequest findResponse setResponse requestReceived (app : IAppBuilder) = 
   Func<_, _>(handler storeRequest findResponse setResponse requestReceived) |> app.Run
