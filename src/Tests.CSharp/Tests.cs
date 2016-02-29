@@ -12,7 +12,7 @@ namespace Tests.CSharp
 {
     public class Tests
     {
-        static HttpClient HttpClient(string uri)
+        private static HttpClient HttpClient(string uri)
         {
             return new HttpClient {BaseAddress = new Uri(uri)};
         }
@@ -249,7 +249,7 @@ namespace Tests.CSharp
         {
             const int port = 8889;
             using (var fakeService = new FakeService(port))
-            using (var httpClient = new HttpClient { BaseAddress = new Uri($"http://localhost:{port}") })
+            using (var httpClient = new HttpClient {BaseAddress = new Uri($"http://localhost:{port}")})
             {
                 fakeService.AddResponse("/foo", Method.GET, Response.WithStatusCode(200));
                 fakeService.Start();
@@ -268,13 +268,36 @@ namespace Tests.CSharp
 
                 Assert.That(httpClient.GetAsync("/statuscode").Result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
 
-                Assert.That(httpClient.GetAsync("/headers").Result.Headers.First(x => x.Key == "foo").Value.First(), Is.EqualTo("bar"));
-                Assert.That(httpClient.GetAsync("/headers").Result.Headers.First(x => x.Key == "bing").Value.First(), Is.EqualTo("bong"));
+                Assert.That(httpClient.GetAsync("/headers").Result.Headers.First(x => x.Key == "foo").Value.First(),
+                    Is.EqualTo("bar"));
+                Assert.That(httpClient.GetAsync("/headers").Result.Headers.First(x => x.Key == "bing").Value.First(),
+                    Is.EqualTo("bong"));
 
-                Assert.That(httpClient.GetAsync("/body").Result.Content.ReadAsStringAsync().Result, Is.EqualTo("bodytext"));
+                Assert.That(httpClient.GetAsync("/body").Result.Content.ReadAsStringAsync().Result,
+                    Is.EqualTo("bodytext"));
 
-                Assert.That(httpClient.GetAsync("/bodyandheaders").Result.Content.ReadAsStringAsync().Result, Is.EqualTo("body"));
-                Assert.That(httpClient.GetAsync("/bodyandheaders").Result.Headers.First(x => x.Key == "foo").Value.First(), Is.EqualTo("bar"));
+                Assert.That(httpClient.GetAsync("/bodyandheaders").Result.Content.ReadAsStringAsync().Result,
+                    Is.EqualTo("body"));
+                Assert.That(
+                    httpClient.GetAsync("/bodyandheaders").Result.Headers.First(x => x.Key == "foo").Value.First(),
+                    Is.EqualTo("bar"));
+            }
+        }
+
+        [Test]
+        public void Delegates_within_delegates()
+        {
+            const string route = "/route/with/slash/at/end/";
+            Func<Request, Response> innerDelegate = request => Response.WithResponses(new [] { Response.WithStatusCode(500), Response.WithStatusCode(200) });
+
+            using (var fakeService = new FakeService())
+            {
+                fakeService.AddResponse(route, Method.GET, Response.WithDelegate(req => innerDelegate(req)));
+                using (var httpClient = HttpClient(fakeService.Start()))
+                {
+                    Assert.That(httpClient.GetAsync(route).Result.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError));
+                    Assert.That(httpClient.GetAsync(route).Result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+                }
             }
         }
     }
