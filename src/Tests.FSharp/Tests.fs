@@ -115,7 +115,7 @@ let ``nested delegate returns responses``() =
   fakeService.Stop()
 
 [<Test>]
-let ``nested delegate returns responses with delegatae``() =
+let ``nested delegate returns responses with delegate``() =
   let fakeService, httpClient = createFakeService()
   Response.withDelegate(fun _ -> Response.withResponses([|Response.withDelegate(fun _ -> Response.withStatusCode 200)|])) |> fakeService.AddResponse "/foo" Method.GET
   httpClient.GetAsync("/foo").Result.StatusCode == HttpStatusCode.OK
