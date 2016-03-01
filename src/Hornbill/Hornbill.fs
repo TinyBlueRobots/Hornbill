@@ -68,7 +68,7 @@ type Response =
   static member WithBodyAndHeaders(statusCode, body, [<ParamArray>] headers) = 
     BodyAndHeaders(statusCode, body, headers |> Array.map parseHeader)
   
-  static member WithResponses responses = 
+  static member WithResponses ([<ParamArray>] responses) = 
     responses
     |> Array.toList
     |> Responses

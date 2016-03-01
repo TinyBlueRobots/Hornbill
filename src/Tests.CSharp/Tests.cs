@@ -277,5 +277,19 @@ namespace Tests.CSharp
                 Assert.That(httpClient.GetAsync("/bodyandheaders").Result.Headers.First(x => x.Key == "foo").Value.First(), Is.EqualTo("bar"));
             }
         }
+
+        [Test]
+        public void Responses_as_params()
+        {
+            using (var fakeService = new FakeService())
+            using (var httpClient = HttpClient(fakeService.Start()))
+            {
+                fakeService.AddResponse("/", Method.GET,
+                    Response.WithResponses(Response.WithStatusCode(200), Response.WithStatusCode(500)));
+                Assert.That(httpClient.GetAsync("/").Result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+                Assert.That(httpClient.GetAsync("/").Result.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError));
+                Assert.That(httpClient.GetAsync("/").Result.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+            }
+        }
     }
 }
