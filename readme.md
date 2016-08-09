@@ -9,7 +9,7 @@ Easy http stubs for integration testing
 
 #### Add some responses
 
-`fakeService.AddResponse` requires a path, a method, and a `Response`
+`fakeService.AddResponse` requires a path(this is a regex), a method, and a `Response`
 
 ##### Status Code
 
