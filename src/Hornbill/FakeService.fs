@@ -78,6 +78,7 @@ type FakeService(port) =
   member this.Host() = this.Start()
   
   member __.Stop() = webApp.Dispose()
+  member this.Dispose() = this.Stop()
   member __.Requests = requests
   interface IDisposable with
     member this.Dispose() = this.Stop()

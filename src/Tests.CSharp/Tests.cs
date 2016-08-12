@@ -291,5 +291,12 @@ namespace Tests.CSharp
                 Assert.That(httpClient.GetAsync("/").Result.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
             }
         }
+
+        [Test]
+        public void Service_can_be_explictly_disposed()
+        {
+            var fakeService = new FakeService();
+            fakeService.Dispose();
+        }
     }
 }
