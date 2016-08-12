@@ -65,6 +65,7 @@
     <Compile Include="OWinContext.fs" />
     <Compile Include="Middleware.fs" />
     <Compile Include="FakeService.fs" />
+    <Compile Include="AssemblyInfo.fs" />
     <None Include="paket.template" />
   </ItemGroup>
   <ItemGroup>

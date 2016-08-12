@@ -2,6 +2,7 @@
 
 open Fake
 open Fake.Testing.NUnit3
+open Fake.AssemblyInfoFile
 
 let solutionFile = !!"*.sln" |> Seq.head
 
@@ -16,6 +17,12 @@ Target "KillProcesses" <| fun () ->
 Target "Build" <| fun () -> 
   !!"src/**/bin/Release/" |> CleanDirs
   CleanDir "build"
+  CreateFSharpAssemblyInfo "src/Hornbill/AssemblyInfo.fs"
+    [Attribute.Title "Hornbill"
+     Attribute.Guid "272AEABD-394C-4153-A530-2C015FB32DF3"
+     Attribute.Product "Hornbill"
+     Attribute.Version version
+     Attribute.FileVersion version]
   build (fun x -> 
     { x with Verbosity = Some MSBuildVerbosity.Quiet
              Properties = [ "Configuration", "Release" ] }) solutionFile
