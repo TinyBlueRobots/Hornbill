@@ -4,9 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Reflection;
 using Hornbill;
 using NUnit.Framework;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Tests.CSharp
 {
@@ -292,11 +294,48 @@ namespace Tests.CSharp
             }
         }
 
+        [TestCase("XMLFile1.zip")]
+        [TestCase("XMLFile1.xml")]
+        public void StaticFiles(string fileName)
+        {
+            using (var fakeService = new FakeService())
+            using (var httpClient = HttpClient(fakeService.Start()))
+            {
+                var sourceFile = new FileInfo(Path.Combine(AssemblyDirectory, fileName));
+                fakeService.AddResponse($"/Files/{fileName}", Method.GET, Response.WithStaticFile(sourceFile.FullName));
+                var httpResponseMessage = httpClient.GetAsync($"/Files/{fileName}").Result;
+
+                Assert.That(httpResponseMessage.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+                
+                var destinationFileName = Path.GetTempFileName();
+
+                using (var fileStream = new FileStream(destinationFileName, FileMode.Create, FileAccess.Write, FileShare.None) { Position = 0 })
+                {
+                    httpResponseMessage.Content.CopyToAsync(fileStream).Wait();
+                }
+
+                var destinationFile = new FileInfo(destinationFileName);
+                Assert.That(destinationFile.Exists);
+                Assert.That(sourceFile.Length, Is.EqualTo(destinationFile.Length));
+            }
+        }
+
         [Test]
         public void Service_can_be_explictly_disposed()
         {
             var fakeService = new FakeService();
             fakeService.Dispose();
+        }
+
+        public static string AssemblyDirectory
+        {
+            get
+            {
+                var codeBase = Assembly.GetExecutingAssembly().CodeBase;
+                var uri = new UriBuilder(codeBase);
+                var path = Uri.UnescapeDataString(uri.Path);
+                return Path.GetDirectoryName(path);
+            }
         }
     }
 }

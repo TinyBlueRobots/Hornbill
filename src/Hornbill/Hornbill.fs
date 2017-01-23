@@ -55,6 +55,8 @@ module private ResponseHelpers =
 type Response = 
   internal
   | Body of StatusCode * Body
+  | Bytes of StatusCode * byte array
+  | BytesAndHeaders of StatusCode * byte array * Headers
   | StatusCode of StatusCode
   | Headers of StatusCode * Headers
   | BodyAndHeaders of StatusCode * Body * Headers
@@ -64,6 +66,10 @@ type Response =
   static member WithHeaders(statusCode, headers) = Headers(statusCode, headers |> mapHeaders)
   static member WithStatusCode statusCode = StatusCode statusCode
   static member WithBody(statusCode, body) = Body(statusCode, body)
+  static member WithBytes(statusCode, bytes) = Bytes(statusCode, bytes)
+  static member WithBytesAndHeaders(statusCode, bytes, headers) = BytesAndHeaders(statusCode, bytes, headers |> mapHeaders)
+  static member WithBytesAndHeaders(statusCode, body, [<ParamArray>] headers) = 
+    BytesAndHeaders(statusCode, body, headers |> Array.map parseHeader)
   static member WithBodyAndHeaders(statusCode, body, headers) = BodyAndHeaders(statusCode, body, headers |> mapHeaders)
   static member WithBodyAndHeaders(statusCode, body, [<ParamArray>] headers) = 
     BodyAndHeaders(statusCode, body, headers |> Array.map parseHeader)
@@ -78,3 +84,4 @@ type Response =
   static member WithRawResponse response = parseResponse response |> Response.WithBodyAndHeaders
   [<Obsolete "Use FakeService.AddResponsesFromFile">]
   static member WithFile path = File.ReadAllText path |> Response.WithRawResponse
+  static member WithStaticFile path = Response.WithBytesAndHeaders(200, File.ReadAllBytes path, [| sprintf "Content-Disposition:attachment; filename=%s" (System.IO.Path.GetFileName path) |] )

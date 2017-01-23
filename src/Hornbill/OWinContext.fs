@@ -12,6 +12,7 @@ let requestPath (ctx : IOwinContext) = ctx.Request.Path.Value
 let requestUri (ctx : IOwinContext) = sprintf "%s%s" ctx.Request.Path.Value ctx.Request.QueryString.Value
 let responseHeaders (ctx : IOwinContext) = ctx.Response.Headers
 let writeResponseBody (body : string) (ctx : IOwinContext) = ctx.Response.WriteAsync body
+let writeResponseBytes (body : byte array) (ctx : IOwinContext) = ctx.Response.WriteAsync body
 
 let toRequest (ctx : IOwinContext) = 
   { Method = ctx.Request.Method |> toMethod
