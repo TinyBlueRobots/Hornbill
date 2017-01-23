@@ -14,6 +14,15 @@ let responseHandler ctx =
     ctx
     |> withStatusCode statusCode
     |> writeResponseBody body
+  | Bytes(statusCode, bytes) -> 
+    ctx
+    |> withStatusCode statusCode
+    |> writeResponseBytes bytes
+  | BytesAndHeaders(statusCode, bytes, headers) -> 
+    ctx
+    |> withStatusCode statusCode
+    |> withHeaders headers
+    |> writeResponseBytes bytes
   | StatusCode statusCode -> 
     ctx
     |> withStatusCode statusCode
