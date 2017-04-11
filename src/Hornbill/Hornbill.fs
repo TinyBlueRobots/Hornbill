@@ -19,6 +19,7 @@ type Method =
   | POST = 4
   | PUT = 5
   | TRACE = 6
+  | PATCH = 7
 
 type Request = 
   { Method : Method
