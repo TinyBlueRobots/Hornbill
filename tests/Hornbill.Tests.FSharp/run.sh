@@ -1,0 +1,1 @@
+dotnet publish -f netcoreapp1.1 && dotnet bin/Debug/netcoreapp1.1/publish/Hornbill.Tests.FSharp.dll

@@ -20,4 +20,3 @@ GET bodyandheaders
 foo:bar
 
 body
-
