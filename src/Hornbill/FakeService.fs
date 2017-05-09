@@ -71,7 +71,7 @@ type FakeService(port) =
     let createHost =
       fun name -> sprintf "http://%s:%i" name port
     url <- createHost "localhost"
-    webApp <- WebApp.Start(createHost "localhost", Middleware.app requests.Add findResponse setResponse requestReceived.Trigger)
+    webApp <- WebApp.Start(createHost "*", Middleware.app requests.Add findResponse setResponse requestReceived.Trigger)
     url
   
   [<Obsolete"Use Start()">]

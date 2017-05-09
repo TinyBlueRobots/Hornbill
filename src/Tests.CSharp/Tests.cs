@@ -327,6 +327,19 @@ namespace Tests.CSharp
             fakeService.Dispose();
         }
 
+        [Test]
+        public void Service_supports_all_hostnames()
+        {
+            const int port = 8889;
+            using (var fakeService = new FakeService(port))
+            using (var httpClient = new HttpClient { BaseAddress = new Uri($"http://{Environment.MachineName}:{port}") })
+            {
+                fakeService.AddResponse("/foo", Method.GET, Response.WithStatusCode(200));
+                fakeService.Start();
+                Assert.That(httpClient.GetAsync("/foo").Result.IsSuccessStatusCode, Is.True);
+            }
+        }
+
         public static string AssemblyDirectory
         {
             get
