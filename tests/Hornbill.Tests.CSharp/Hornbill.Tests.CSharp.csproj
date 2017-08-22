@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <TargetFramework>netcoreapp20</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <None Include="Responses.txt">
@@ -18,6 +18,6 @@
     <ProjectReference Include="..\..\src\Hornbill\Hornbill.fsproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Expecto" Version="5.0.0-rc1" />
+    <PackageReference Include="Expecto" Version="*" />
   </ItemGroup>
 </Project>

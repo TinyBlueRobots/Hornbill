@@ -1,9 +1,2 @@
-
-mono=mono
-if [ "$OS" = "Windows_NT" ]
-  then
-    mono=""
-fi
-
-dotnet restore
-$mono packages/FAKE/tools/Fake.exe $@
+export FrameworkPathOverride=$(dirname $(which mono))/../lib/mono/4.5/
+dotnet build

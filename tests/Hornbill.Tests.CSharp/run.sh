@@ -1,1 +1,1 @@
-dotnet publish && dotnet bin/Debug/netcoreapp1.1/publish/Hornbill.Tests.CSharp.dll
+dotnet publish -f netcoreapp20 && dotnet bin/Debug/netcoreapp20/publish/Hornbill.Tests.CSharp.dll

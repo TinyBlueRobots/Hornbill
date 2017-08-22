@@ -1,12 +1,10 @@
 ﻿module internal HttpContext
 
 open System
-open Microsoft.AspNetCore.Builder
 open Microsoft.AspNetCore.Http
 open Microsoft.Extensions.Primitives
 open Hornbill
 open System.IO
-open System.Collections.Generic
 
 let toMethod m = Enum.Parse(typeof<Method>, m) :?> Method
 let requestMethod (ctx : HttpContext) = ctx.Request.Method |> toMethod
