@@ -48,7 +48,9 @@ type FakeService(port) =
       | false, true -> "/%s"
       | true, false -> "%s$"
       | _ -> "%s"
-    responses.Add((sprintf formatter path, verb), response)
+    let key, value = (sprintf formatter path, verb), response
+    if responses.ContainsKey key then responses.Remove key |> ignore
+    responses.Add(key, value)
 
   member __.AddResponsesFromText text =
    for parsedRequest in ResponsesParser.parse text do

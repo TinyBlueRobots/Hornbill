@@ -26,6 +26,18 @@ namespace Hornbill.Tests.CSharp
       }
     }
 
+    static void ReplaceResponse()
+    {
+      using (var fakeService = new FakeService())
+      using (var httpClient = HttpClient(fakeService.Start()))
+      {
+        fakeService.AddResponse("/foo", Method.GET, Response.WithBody(200, "foobar"));
+        fakeService.AddResponse("/foo", Method.GET, Response.WithBody(200, "foo"));
+        Expect.equal(httpClient.GetStringAsync("/foo").Result, "foo", "GET returns foo");
+        Expect.equal(fakeService.Requests.First().Method, Method.GET, "First request is GET");
+      }
+    }
+
     static void Regex()
     {
       using (var fakeService = new FakeService())
@@ -284,6 +296,7 @@ namespace Hornbill.Tests.CSharp
     public static Test tests =
       Runner.TestList("Tests", new Expecto.Test[] {
         Runner.TestCase("Body", () => Body()),
+        Runner.TestCase("ReplaceResponse", () => ReplaceResponse()),
         Runner.TestCase("Regex", () => Regex()),
         Runner.TestCase("Status", () => Status()),
         Runner.TestCase("ResponsesFromFile", () => ResponsesFromFile()),
