@@ -7,6 +7,7 @@ open System.Collections.Generic
 open System.Text.RegularExpressions
 open Microsoft.AspNetCore.Hosting
 open System.IO
+open Microsoft.AspNetCore.TestHost
 
 type FakeService(port) =
   let responses = Dictionary<_, _>()
@@ -33,9 +34,9 @@ type FakeService(port) =
         l.Stop()
         p
 
-  let port = if port = 0 then findPort() else port
-
+  let webHostBuilder = WebHostBuilder().Configure(fun app -> Middleware.app requests.Add findResponse setResponse requestReceived.Trigger app)
   let mutable webHost = Unchecked.defaultof<_>
+  let mutable testServer = Unchecked.defaultof<_>
 
   new() = new FakeService 0
 
@@ -68,12 +69,21 @@ type FakeService(port) =
   member __.Uri = Uri __.Url
 
   member __.Start() =
+    let port = if port = 0 then findPort() else port
     url <- sprintf "http://0.0.0.0:%i" port
-    webHost <- WebHostBuilder().UseUrls(url).Configure(fun app -> Middleware.app requests.Add findResponse setResponse requestReceived.Trigger app).UseKestrel().Build()
+    webHost <- webHostBuilder.UseUrls(url).UseKestrel().Build()
     webHost.Start()
     url
 
-  member __.Stop() = if isNull webHost |> not then webHost.Dispose()
+  member __.StartTestHost() =
+    testServer <- new TestServer(webHostBuilder)
+    testServer.CreateClient()
+
+  member __.Stop() =
+    let dispose (disposable : #IDisposable) =
+      if isNull disposable |> not then disposable.Dispose()
+    dispose testServer
+    dispose webHost
   member __.Requests = requests
   member __.Dispose() = __.Stop()
 

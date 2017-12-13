@@ -6,7 +6,6 @@ open System.Net.Http
 open System.Net
 open Hornbill
 open System.Threading
-open ResponsesParser
 open Expecto
 
 type TestService() =
@@ -65,7 +64,10 @@ GET statuscode
 [<Tests>]
 let tests =
 
-  let parserTests = [ "GET"; "POST"; "PUT"; "OPTIONS"; "HEAD"; "DELETE"; "TRACE"; "PATCH" ] |> List.map ``parsing responses supports all methods`` |> List.map (testCase "parser")
+  let parserTests =
+    [ "GET"; "POST"; "PUT"; "OPTIONS"; "HEAD"; "DELETE"; "TRACE"; "PATCH" ]
+    |> List.map (fun name -> name, ``parsing responses supports all methods`` name)
+    |> List.map (fun (name, test) -> testCase <| sprintf "parser %s" name <| test)
 
   [ testCase "body" body
     testCase "headers" headers

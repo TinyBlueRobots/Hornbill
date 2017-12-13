@@ -27,7 +27,7 @@ Easy http stubs for integration testing
 
 `fakeService.AddResponse("/foo", Method.GET, Response.WithHeaders(200, "foo:bar", "bing:bong")`
 
-##### Body and Headers 
+##### Body and Headers
 
 `fakeService.AddResponse("/foo", Method.GET, Response.WithBodyAndHeaders(200, "body", new Dictionary<string, string> {["foo"] = "bar" }))`
 
@@ -60,7 +60,7 @@ POST path
 
 * Headers and body are optional
 * Separate the body with a single line break
-* Separate each response with a double line break 
+* Separate each response with a double line break
 
 #### Add responses from file
 
@@ -71,6 +71,8 @@ The same as above, but takes a file name instead of a string
 #### Starting the service
 
 Calling `fakeService.Start()` to host on a random available port. The address is returned as a `string`.
+
+Calling `fakeService.StartTestHost()` to host using `Microsoft.AspNetCore.TestHost`. The `HttpClient` is returned.
 
 #### Requests
 
