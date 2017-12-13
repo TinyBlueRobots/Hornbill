@@ -1,4 +1,4 @@
-![logo](https://dl.dropboxusercontent.com/u/11302680/nuget/hornbill.gif)
+![logo](https://raw.githubusercontent.com/TinyBlueRobots/Hornbill/master/logo.gif)
 # Hornbill
 
 Easy http stubs for integration testing
@@ -87,3 +87,7 @@ The address is returned from `fakeService.Start()` and is also available as a `s
 #### Stopping the service
 
 FakeService implements `IDisposable` but you can also call `fakeService.Stop()`
+
+#### F# Api
+
+[Here](https://github.com/TinyBlueRobots/Hornbill/blob/master/src/Hornbill/FSharp.fs)
