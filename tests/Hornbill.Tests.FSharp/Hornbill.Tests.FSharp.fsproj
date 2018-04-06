@@ -10,6 +10,7 @@
     <ProjectReference Include="..\..\src\Hornbill\Hornbill.fsproj" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="FSharp.Core" Version="*" />
     <PackageReference Include="Expecto" Version="*" />
   </ItemGroup>
 </Project>

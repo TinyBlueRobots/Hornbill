@@ -79,6 +79,13 @@ type FakeService(port) =
     testServer <- new TestServer(webHostBuilder)
     testServer.CreateClient()
 
+  member __.StartApp app =
+    let port = if port = 0 then findPort() else port
+    url <- sprintf "http://0.0.0.0:%i" port
+    webHost <- WebHostBuilder().Configure(app).UseUrls(url).UseKestrel().Build()
+    webHost.Start()
+    url
+
   member __.Stop() =
     let dispose (disposable : #IDisposable) =
       if isNull disposable |> not then disposable.Dispose()

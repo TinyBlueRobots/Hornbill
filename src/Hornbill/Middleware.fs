@@ -1,6 +1,5 @@
 ﻿module internal Middleware
 
-open System
 open System.Threading.Tasks
 open Hornbill
 open HttpContext

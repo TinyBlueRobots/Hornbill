@@ -70,9 +70,11 @@ The same as above, but takes a file name instead of a string
 
 #### Starting the service
 
-Calling `fakeService.Start()` to host on a random available port. The address is returned as a `string`.
+Call `fakeService.Start()` to host on a random available port. The address is returned as a `string`.
 
-Calling `fakeService.StartTestHost()` to host using `Microsoft.AspNetCore.TestHost`. The `HttpClient` is returned.
+Call `fakeService.StartTestHost()` to host using `Microsoft.AspNetCore.TestHost`. The `HttpClient` is returned.
+
+Call `fakeService.StartApp(app)` to override the middleware entirely with your own.
 
 #### Requests
 

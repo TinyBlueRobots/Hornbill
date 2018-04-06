@@ -8,6 +8,8 @@ using System.Linq;
 using System.IO;
 using System.Collections.Generic;
 using System.Threading;
+using Microsoft.AspNetCore.Builder;
+using System.Threading.Tasks;
 
 namespace Hornbill.Tests.CSharp
 {
@@ -240,12 +242,12 @@ namespace Hornbill.Tests.CSharp
 
     static void SetPort()
     {
-      const int port = 8889;
+      const int port = 8080;
       using (var fakeService = new FakeService(port))
-      using (var httpClient = new HttpClient { BaseAddress = new Uri($"http://localhost:{port}") })
+      using (var httpClient = HttpClient($"http://localhost:{port}"))
       {
-        fakeService.AddResponse("/foo", Method.GET, Response.WithStatusCode(200));
         fakeService.Start();
+        fakeService.AddResponse("/foo", Method.GET, Response.WithStatusCode(200));
         Expect.equal(httpClient.GetAsync("/foo").Result.StatusCode, HttpStatusCode.OK, "OK is returned");
       }
     }
@@ -292,6 +294,15 @@ namespace Hornbill.Tests.CSharp
       fakeService.Dispose();
     }
 
+    static void Start_App()
+    {
+      using (var fakeService = new FakeService())
+      using (var httpClient = HttpClient(fakeService.StartApp(app => app.Run(context => Task.FromResult(context.Response.StatusCode = 200)))))
+      {
+        Expect.equal(httpClient.GetAsync("/foo").Result.StatusCode, HttpStatusCode.OK, "OK is returned");
+      }
+    }
+
     [Tests]
     public static Test tests =
       Runner.TestList("Tests", new Expecto.Test[] {
@@ -317,6 +328,7 @@ namespace Hornbill.Tests.CSharp
         Runner.TestCase("StaticFile xml", () => StaticFile("XMLFile1.xml")),
         Runner.TestCase("StaticFile zip", () => StaticFile("XMLFile1.zip")),
         Runner.TestCase("Service_can_be_explictly_disposed", () => Service_can_be_explictly_disposed()),
+        Runner.TestCase("Start App", () => Start_App())
       });
 
     public static int Main(string[] argv) => Runner.RunTestsInAssembly(Runner.DefaultConfig, argv);
