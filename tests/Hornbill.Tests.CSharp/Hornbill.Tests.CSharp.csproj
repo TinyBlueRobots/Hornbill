@@ -4,15 +4,9 @@
     <TargetFramework>netcoreapp20</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="Responses.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="XMLFile1.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="XMLFile1.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <EmbeddedResource Include="Responses.txt" CopyToOutputDirectory="Always" />
+    <EmbeddedResource Include="XMLFile1.xml" CopyToOutputDirectory="Always" />
+    <EmbeddedResource Include="XMLFile1.zip" CopyToOutputDirectory="Always" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Hornbill\Hornbill.fsproj" />
