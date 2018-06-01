@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard20;net461</TargetFrameworks>
     <Description>Easily create fake HTTP endpoints for integration testing</Description>
-    <VersionPrefix>2.0.0</VersionPrefix>
+    <VersionPrefix>2.3.1</VersionPrefix>
     <Authors>Tiny Blue Robots</Authors>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>Hornbill</AssemblyName>
@@ -27,8 +27,8 @@
     <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="*" />
-    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="*" />
-    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="*" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="2.0.0" />
   </ItemGroup>
 </Project>
