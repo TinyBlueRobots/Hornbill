@@ -70,7 +70,7 @@ type FakeService(port) =
 
   member __.Start() =
     let port = if port = 0 then findPort() else port
-    url <- sprintf "http://0.0.0.0:%i" port
+    url <- sprintf "http://127.0.0.1:%i" port
     webHost <- webHostBuilder.UseUrls(url).UseKestrel().Build()
     webHost.Start()
     url
@@ -81,7 +81,7 @@ type FakeService(port) =
 
   member __.StartApp app =
     let port = if port = 0 then findPort() else port
-    url <- sprintf "http://0.0.0.0:%i" port
+    url <- sprintf "http://127.0.0.1:%i" port
     webHost <- WebHostBuilder().Configure(app).UseUrls(url).UseKestrel().Build()
     webHost.Start()
     url
