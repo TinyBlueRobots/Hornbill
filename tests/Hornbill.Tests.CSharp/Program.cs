@@ -25,6 +25,7 @@ namespace Hornbill.Tests.CSharp
         fakeService.AddResponse("/foo", Method.GET, Response.WithBody(200, "foo"));
         Expect.equal(httpClient.GetStringAsync("/foo").Result, "foo", "GET returns foo");
         Expect.equal(fakeService.Requests.First().Method, Method.GET, "First request is GET");
+        Expect.equal(fakeService.Requests.First().Uri, new Uri($"{fakeService.Url}/foo"), "First request has Uri set");
       }
     }
 

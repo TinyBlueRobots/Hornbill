@@ -26,7 +26,8 @@ type Request =
     Path : string
     Body : string
     Headers : IDictionary<string, string array>
-    Query : IDictionary<string, string array> }
+    Query : IDictionary<string, string array>
+    Uri : Uri }
 
 [<AutoOpen>]
 module private ResponseHelpers =

@@ -2,6 +2,7 @@
 
 open System
 open Microsoft.AspNetCore.Http
+open Microsoft.AspNetCore.Http.Extensions
 open Microsoft.Extensions.Primitives
 open Hornbill
 open System.IO
@@ -15,11 +16,13 @@ let writeResponseBody (body : string) (ctx : HttpContext) = ctx.Response.WriteAs
 let writeResponseBytes (body : byte array) (ctx : HttpContext) = ctx.Response.Body.WriteAsync(body, 0, body.Length)
 
 let toRequest (ctx : HttpContext) =
-  { Method = ctx.Request.Method |> toMethod
+  let request = ctx.Request
+  { Method = request.Method |> toMethod
     Path = ctx |> requestPath
     Body = (new StreamReader(ctx.Request.Body)).ReadToEnd()
-    Headers = ctx.Request.Headers |> Seq.map (fun (KeyValue (k,v)) -> k, v.ToArray()) |> dict
-    Query = ctx.Request.Query |> Seq.map (fun (KeyValue(k, v)) -> k, v.ToArray()) |> dict }
+    Headers = request.Headers |> Seq.map (fun (KeyValue (k,v)) -> k, v.ToArray()) |> dict
+    Query = request.Query |> Seq.map (fun (KeyValue(k, v)) -> k, v.ToArray()) |> dict
+    Uri = request.GetDisplayUrl() |> Uri }
 
 let responseKey ctx = ctx |> requestUri, ctx |> requestMethod
 
