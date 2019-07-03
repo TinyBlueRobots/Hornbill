@@ -5,7 +5,9 @@ Easy http stubs for integration testing
 
 #### Create a fake service
 
-`var fakeService = new FakeService()`
+`var fakeService = new FakeService() // Randomly allocates a port`
+
+`var fakeService = new FakeService(port) // Or supply a specific port`
 
 #### Add some responses
 
