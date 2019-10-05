@@ -68,7 +68,7 @@ namespace Hornbill.Tests.CSharp
       using (var fakeService = new FakeService())
       using (var httpClient = HttpClient(fakeService.Start()))
       {
-        fakeService.AddResponse("/test\\?foo=bar", Method.GET, Response.WithDelegate( x => x.Query["foo"].Contains("bar") ? Response.WithStatusCode(200) : Response.WithStatusCode(404)));
+        fakeService.AddResponse("/test\\?foo=bar", Method.GET, Response.WithDelegate(x => x.Query["foo"].Contains("bar") ? Response.WithStatusCode(200) : Response.WithStatusCode(404)));
         Expect.equal(httpClient.GetAsync("/test?foo=bar").Result.StatusCode, HttpStatusCode.OK, "OK is returned");
         Expect.equal(httpClient.GetAsync("/test?foo=baz").Result.StatusCode, HttpStatusCode.NotFound, "NotFound is returned");
       }
@@ -79,7 +79,7 @@ namespace Hornbill.Tests.CSharp
       using (var fakeService = new FakeService())
       using (var httpClient = HttpClient(fakeService.Start()))
       {
-        fakeService.AddResponse("/test", Method.GET, Response.WithHeaders(200, new Dictionary<string, string> {["foo"] = "bar"}));
+        fakeService.AddResponse("/test", Method.GET, Response.WithHeaders(200, new Dictionary<string, string> { ["foo"] = "bar" }));
         var result = httpClient.GetAsync("/test").Result;
         Expect.equal(result.Headers.GetValues("foo").First(), "bar", "Headers contains foo: bar");
       }
@@ -131,7 +131,7 @@ namespace Hornbill.Tests.CSharp
       using (var fakeService = new FakeService())
       using (var httpClient = HttpClient(fakeService.Start()))
       {
-        fakeService.AddResponse("/", Method.GET, Response.WithResponses(new[] {Response.WithStatusCode(200), Response.WithStatusCode(500)}));
+        fakeService.AddResponse("/", Method.GET, Response.WithResponses(new[] { Response.WithStatusCode(200), Response.WithStatusCode(500) }));
         Expect.equal(httpClient.GetAsync("/").Result.StatusCode, HttpStatusCode.OK, "OK is returned");
         Expect.equal(httpClient.GetAsync("/").Result.StatusCode, HttpStatusCode.InternalServerError, "InternalServerError is returned");
         Expect.equal(httpClient.GetAsync("/").Result.StatusCode, HttpStatusCode.NotFound, "NotFound is returned");
@@ -144,7 +144,7 @@ namespace Hornbill.Tests.CSharp
       using (var httpClient = HttpClient(fakeService.Start()))
       {
         const string link = "http://foo/bar";
-        fakeService.AddResponse("/headers", Method.GET, Response.WithBodyAndHeaders(200, "body", new Dictionary<string, string> {["Link"] = link}));
+        fakeService.AddResponse("/headers", Method.GET, Response.WithBodyAndHeaders(200, "body", new Dictionary<string, string> { ["Link"] = link }));
         httpClient.DefaultRequestHeaders.Add("Foo", "Bar");
         var result = httpClient.GetAsync("/headers").Result;
         Expect.equal(result.StatusCode, HttpStatusCode.OK, "OK is returned");
@@ -175,7 +175,7 @@ namespace Hornbill.Tests.CSharp
         fakeService.AddResponse("/", Method.GET, Response.WithStatusCode(200));
         fakeService.AddResponse("/", Method.HEAD, Response.WithStatusCode(404));
         Expect.equal(httpClient.GetAsync("/").Result.StatusCode, HttpStatusCode.OK, "OK is returned");
-        var httpRequestMessage = new HttpRequestMessage {Method = HttpMethod.Head};
+        var httpRequestMessage = new HttpRequestMessage { Method = HttpMethod.Head };
         Expect.equal(httpClient.SendAsync(httpRequestMessage).Result.StatusCode, HttpStatusCode.NotFound, "NotFound is returned");
       }
     }
@@ -243,11 +243,9 @@ namespace Hornbill.Tests.CSharp
 
     static void SetPort()
     {
-      const int port = 8080;
-      using (var fakeService = new FakeService(port))
-      using (var httpClient = HttpClient($"http://localhost:{port}"))
+      using (var fakeService = new FakeService(8080))
+      using (var httpClient = HttpClient(fakeService.Start()))
       {
-        fakeService.Start();
         fakeService.AddResponse("/foo", Method.GET, Response.WithStatusCode(200));
         Expect.equal(httpClient.GetAsync("/foo").Result.StatusCode, HttpStatusCode.OK, "OK is returned");
       }
@@ -280,7 +278,7 @@ namespace Hornbill.Tests.CSharp
 
         using (var fileStream = new FileStream(destinationFileName, FileMode.Create, FileAccess.Write, FileShare.None) { Position = 0 })
         {
-            httpResponseMessage.Content.CopyToAsync(fileStream).Wait();
+          httpResponseMessage.Content.CopyToAsync(fileStream).Wait();
         }
 
         var destinationFile = new FileInfo(destinationFileName);

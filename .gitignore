@@ -6,3 +6,5 @@ paket-files
 .idea
 .fake
 .vscode
+.paket
+.ionide
