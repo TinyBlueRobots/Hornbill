@@ -92,6 +92,7 @@ type FakeService(port) =
     dispose testServer
     dispose webHost
   member __.Requests = requests
+  member __.Responses = responses
   member __.Dispose() = __.Stop()
 
   interface IDisposable with
