@@ -2,15 +2,15 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     <Description>Easily create fake HTTP endpoints for integration testing</Description>
-    <VersionPrefix>2.6.0</VersionPrefix>
+    <VersionPrefix>2.6.1</VersionPrefix>
     <Authors>Tiny Blue Robots</Authors>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>Hornbill</AssemblyName>
     <PackageId>Hornbill</PackageId>
     <PackageTags>HTTP;testing;integration;stub;fake;test;web</PackageTags>
-    <PackageIconUrl>https://raw.githubusercontent.com/TinyBlueRobots/Hornbill/master/logo.gif</PackageIconUrl>
+    <PackageIcon>logo.gif</PackageIcon>
     <PackageProjectUrl>https://github.com/TinyBlueRobots/Hornbill</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/TinyBlueRobots/Hornbill/LICENSE</PackageLicenseUrl>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <RepositoryType>git</RepositoryType>
     <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
   </PropertyGroup>
@@ -21,15 +21,17 @@
     <Compile Include="ResponsesParser.fs" />
     <Compile Include="Middleware.fs" />
     <Compile Include="FakeService.fs" />
+    <None Include="..\..\LICENSE" Pack="true" PackagePath="" />
+    <None Include="..\..\logo.gif" Pack="true" PackagePath="" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
     <Reference Include="System.Runtime" />
     <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.*" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.*" />
+    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.*" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="2.*" />
   </ItemGroup>
 </Project>
