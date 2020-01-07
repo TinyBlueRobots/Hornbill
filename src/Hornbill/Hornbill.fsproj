@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard20;net461</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     <Description>Easily create fake HTTP endpoints for integration testing</Description>
-    <VersionPrefix>2.4.0</VersionPrefix>
+    <VersionPrefix>2.6.0</VersionPrefix>
     <Authors>Tiny Blue Robots</Authors>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>Hornbill</AssemblyName>
