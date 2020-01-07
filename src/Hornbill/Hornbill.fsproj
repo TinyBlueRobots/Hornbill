@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     <Description>Easily create fake HTTP endpoints for integration testing</Description>
-    <VersionPrefix>2.6.1</VersionPrefix>
+    <VersionPrefix>2.6.2</VersionPrefix>
     <Authors>Tiny Blue Robots</Authors>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>Hornbill</AssemblyName>
