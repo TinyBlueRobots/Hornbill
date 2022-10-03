@@ -1,3 +1,6 @@
-export FrameworkPathOverride=$(dirname $(which mono))/../lib/mono/4.5/
-ls ./tests/**/*.fsproj | xargs -I {} "$SHELL" -c "echo {} && dotnet run -p {}"
+cd tests/Hornbill.Tests.CSharp
+dotnet run
+cd ../Hornbill.Tests.FSharp
+dotnet run
+cd ../..
 dotnet build

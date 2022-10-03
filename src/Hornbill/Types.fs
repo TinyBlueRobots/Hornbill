@@ -6,9 +6,7 @@ open System.Text.RegularExpressions
 open System.IO
 
 type internal StatusCode = int
-
 type internal Headers = (string * string) seq
-
 type internal Body = string
 
 type Method =
@@ -38,28 +36,6 @@ module private ResponseHelpers =
     Regex.Match(header, "([^\s]+?)\s*:\s*([^\s]+)")
     |> fun x -> x.Groups.[1].Value, x.Groups.[2].Value
 
-  let parseResponse (response: string) =
-    let lines = Regex.Split(response, "\r?\n")
-
-    let statusCode =
-      Regex.Match(lines |> Array.head, "\d{3}").Value
-      |> int
-
-    let headers =
-      lines
-      |> Array.skip 1
-      |> Array.takeWhile ((<>) "")
-      |> Array.map parseHeader
-      |> dict
-
-    let body =
-      lines
-      |> Array.skipWhile ((<>) "")
-      |> Array.skip 1
-      |> String.concat Environment.NewLine
-
-    statusCode, body, headers
-
 type Response =
   internal
   | Body of StatusCode * Body
@@ -70,6 +46,7 @@ type Response =
   | BodyAndHeaders of StatusCode * Body * Headers
   | Responses of Response list
   | Dlg of (Request -> Response)
+
   static member WithHeaders(statusCode, [<ParamArray>] headers) =
     Headers(statusCode, headers |> Array.map parseHeader)
 
@@ -93,12 +70,12 @@ type Response =
     BodyAndHeaders(statusCode, body, headers |> Array.map parseHeader)
 
   static member WithResponses([<ParamArray>] responses) = responses |> Array.toList |> Responses
-
   static member WithDelegate(func: Func<Request, Response>) = Dlg func.Invoke
 
   static member WithStaticFile path =
-    Response.WithBytesAndHeaders
-      (200,
-       File.ReadAllBytes path,
-       [| System.IO.Path.GetFileName path
-          |> sprintf "Content-Disposition:attachment; filename=%s" |])
+    Response.WithBytesAndHeaders(
+      200,
+      File.ReadAllBytes path,
+      [| System.IO.Path.GetFileName path
+         |> sprintf "Content-Disposition:attachment; filename=%s" |]
+    )

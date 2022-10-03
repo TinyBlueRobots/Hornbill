@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
+    <TargetFrameworks>net6.0</TargetFrameworks>
     <Description>Easily create fake HTTP endpoints for integration testing</Description>
-    <VersionPrefix>2.6.2</VersionPrefix>
     <Authors>Tiny Blue Robots</Authors>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>Hornbill</AssemblyName>
@@ -24,14 +23,10 @@
     <None Include="..\..\LICENSE" Pack="true" PackagePath="" />
     <None Include="..\..\logo.png" Pack="true" PackagePath="" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
-    <Reference Include="System.Runtime" />
-    <Reference Include="System.Net.Http" />
-  </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.*" />
-    <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.*" />
-    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.*" />
-    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="2.*" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="6.0.9" />
   </ItemGroup>
 </Project>
