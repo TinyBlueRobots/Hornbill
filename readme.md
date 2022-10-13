@@ -13,7 +13,7 @@ Easy http stubs for integration testing
 
 `fakeService.AddResponse` requires a path, a method, and a `Response`
 
-**N.B. The path is a regex, so if you want to match /test?foo=bar and /test?foo=baz then your path should be /foo.***
+**N.B. The path is a regex, so if you want to match /test?foo=bar then your path should be /test\?foo=bar**
 
 ##### Status Code
 
