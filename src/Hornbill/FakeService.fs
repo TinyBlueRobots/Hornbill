@@ -9,10 +9,11 @@ open Microsoft.AspNetCore.Hosting
 open System.IO
 open Microsoft.AspNetCore.TestHost
 open Microsoft.AspNetCore.Builder
+open System.Collections.Concurrent
 
 type FakeService(port) =
   let responses = Dictionary<_, _>()
-  let requests = ResizeArray()
+  let requests = ConcurrentQueue<_>()
 
   let tryFindKey path methd =
     responses.Keys
@@ -49,7 +50,7 @@ type FakeService(port) =
 
   let webHostBuilder =
     WebHostBuilder()
-      .Configure(fun app -> Middleware.app requests.Add findResponse setResponse requestReceived.Trigger app)
+      .Configure(fun app -> Middleware.app requests.Enqueue findResponse setResponse requestReceived.Trigger app)
 
   let mutable webHost = Unchecked.defaultof<_>
   let mutable testServer = Unchecked.defaultof<_>
@@ -126,7 +127,7 @@ type FakeService(port) =
     dispose testServer
     dispose webHost
 
-  member _.Requests = requests
+  member _.Requests = Seq.toArray requests
   member _.Responses = responses
   member __.Dispose() = __.Stop()
 
