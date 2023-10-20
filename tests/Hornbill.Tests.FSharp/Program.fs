@@ -13,15 +13,14 @@ type TestService() =
   do fakeService.Start() |> ignore
 
   let httpClient = new HttpClient(BaseAddress = fakeService.Uri)
-  with
-    member __.Service = fakeService
+  member __.Service = fakeService
 
-    member __.Client = httpClient
+  member __.Client = httpClient
 
-    interface IDisposable with
-      member __.Dispose() =
-        fakeService.Dispose()
-        httpClient.Dispose()
+  interface IDisposable with
+    member __.Dispose() =
+      fakeService.Dispose()
+      httpClient.Dispose()
 
 let (==) actual expected = Expect.equal actual expected ""
 

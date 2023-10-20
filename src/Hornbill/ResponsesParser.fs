@@ -99,7 +99,8 @@ module private Impl =
               | None -> [ header ]
               | Some headers -> header :: headers
 
-            { partialReqRep with Headers = Some headers }
+            { partialReqRep with
+                Headers = Some headers }
           | "" when partialReqRep.State = StatusCode -> { partialReqRep with State = Body } //consume empty line before body
           | "" when partialReqRep.State = Body -> partialReqRep //consume trailing lines
           | line ->

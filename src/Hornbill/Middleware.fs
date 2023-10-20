@@ -10,16 +10,16 @@ module private Impl =
 
   let responseHandler ctx =
     function
-    | Body (statusCode, body) -> ctx |> withStatusCode statusCode |> writeResponseBody body
-    | Bytes (statusCode, bytes) -> ctx |> withStatusCode statusCode |> writeResponseBytes bytes
-    | BytesAndHeaders (statusCode, bytes, headers) ->
+    | Body(statusCode, body) -> ctx |> withStatusCode statusCode |> writeResponseBody body
+    | Bytes(statusCode, bytes) -> ctx |> withStatusCode statusCode |> writeResponseBytes bytes
+    | BytesAndHeaders(statusCode, bytes, headers) ->
       ctx
       |> withStatusCode statusCode
       |> withHeaders headers
       |> writeResponseBytes bytes
     | StatusCode statusCode -> ctx |> withStatusCode statusCode |> send
-    | Headers (statusCode, headers) -> ctx |> withStatusCode statusCode |> withHeaders headers |> send
-    | BodyAndHeaders (statusCode, body, headers) ->
+    | Headers(statusCode, headers) -> ctx |> withStatusCode statusCode |> withHeaders headers |> send
+    | BodyAndHeaders(statusCode, body, headers) ->
       ctx
       |> withStatusCode statusCode
       |> withHeaders headers
@@ -34,8 +34,8 @@ module private Impl =
 
     let rec extractResponse =
       function
-      | Some (Dlg dlg) -> dlg request |> Some |> extractResponse
-      | Some (Responses (response :: responses)) ->
+      | Some(Dlg dlg) -> dlg request |> Some |> extractResponse
+      | Some(Responses(response :: responses)) ->
         Responses responses |> setResponse key
         Some response |> extractResponse
       | Some response -> response

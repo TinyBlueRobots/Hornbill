@@ -7,7 +7,7 @@ open Microsoft.Extensions.Primitives
 open Hornbill
 open System.IO
 
-let toMethod (m:string) =
+let toMethod (m: string) =
   Enum.Parse(typeof<Method>, m) :?> Method
 
 let requestMethod (ctx: HttpContext) = ctx.Request.Method |> toMethod
@@ -28,8 +28,8 @@ let toRequest (ctx: HttpContext) =
   { Method = request.Method |> toMethod
     Path = ctx |> requestPath
     Body = (new StreamReader(ctx.Request.Body)).ReadToEnd()
-    Headers = request.Headers |> Seq.map (fun (KeyValue (k, v)) -> k, v.ToArray()) |> dict
-    Query = request.Query |> Seq.map (fun (KeyValue (k, v)) -> k, v.ToArray()) |> dict
+    Headers = request.Headers |> Seq.map (fun (KeyValue(k, v)) -> k, v.ToArray()) |> dict
+    Query = request.Query |> Seq.map (fun (KeyValue(k, v)) -> k, v.ToArray()) |> dict
     Uri = request.GetDisplayUrl() |> Uri }
 
 let responseKey ctx = ctx |> requestUri, ctx |> requestMethod
