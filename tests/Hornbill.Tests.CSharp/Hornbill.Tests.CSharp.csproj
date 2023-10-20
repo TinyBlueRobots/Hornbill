@@ -12,6 +12,6 @@
     <ProjectReference Include="..\..\src\Hornbill\Hornbill.fsproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Expecto" Version="*" />
+    <PackageReference Include="Expecto" Version="10.1.0" />
   </ItemGroup>
 </Project>

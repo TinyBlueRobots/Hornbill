@@ -99,4 +99,4 @@ let tests =
   |> testList "tests"
 
 [<EntryPoint>]
-let main args = runTestsInAssembly defaultConfig args
+let main args = runTestsWithCLIArgs [] args tests

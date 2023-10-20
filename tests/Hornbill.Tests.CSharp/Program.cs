@@ -330,6 +330,6 @@ namespace Hornbill.Tests.CSharp
         Runner.TestCase("Start App", () => Start_App())
       });
 
-    public static int Main(string[] argv) => Runner.RunTestsInAssembly(Runner.DefaultConfig, argv);
+    public static int Main(string[] argv) => Runner.RunTestsInAssemblyWithCLIArgs(Array.Empty<Expecto.Tests.CLIArguments>(), argv);
   }
 }
