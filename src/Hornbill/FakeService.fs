@@ -41,12 +41,12 @@ type FakeService(port) =
   let findPort () =
     TcpListener(IPAddress.Loopback, 0)
     |> fun l ->
-         l.Start()
+      l.Start()
 
-         (l, (l.LocalEndpoint :?> IPEndPoint).Port)
-         |> fun (l, p) ->
-              l.Stop()
-              p
+      (l, (l.LocalEndpoint :?> IPEndPoint).Port)
+      |> fun (l, p) ->
+        l.Stop()
+        p
 
   let webHostBuilder =
     WebHostBuilder()
@@ -54,7 +54,7 @@ type FakeService(port) =
 
   let mutable webHost = Unchecked.defaultof<_>
   let mutable testServer = Unchecked.defaultof<_>
-  new() = new FakeService 0
+  new() = new FakeService(0)
   member _.OnRequestReceived(f: Action<Request>) = requestReceived.Publish.Add f.Invoke
 
   member _.AddResponse (path: string) verb response =

@@ -1,6 +1,7 @@
-cd tests/Hornbill.Tests.CSharp
+#!/bin/bash
+cd tests/Hornbill.Tests.CSharp || exit
 dotnet run
-cd ../Hornbill.Tests.FSharp
+cd ../Hornbill.Tests.FSharp || exit
 dotnet run
 cd ../..
 dotnet build
