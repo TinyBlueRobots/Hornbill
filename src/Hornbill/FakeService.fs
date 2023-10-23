@@ -13,7 +13,7 @@ open System.Collections.Concurrent
 
 type FakeService(port) =
   let responses = Dictionary<_, _>()
-  let requests = ConcurrentQueue<_>()
+  let mutable requests = ConcurrentQueue<_>()
 
   let tryFindKey path methd =
     responses.Keys
@@ -128,6 +128,8 @@ type FakeService(port) =
     dispose webHost
 
   member _.Requests = Seq.toArray requests
+  member _.CleaRequests() = requests <- ConcurrentQueue<_>()
+
   member _.Responses = responses
   member __.Dispose() = __.Stop()
 
