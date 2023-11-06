@@ -128,7 +128,7 @@ type FakeService(port) =
     dispose webHost
 
   member _.Requests = Seq.toArray requests
-  member _.CleaRequests() = requests <- ConcurrentQueue<_>()
+  member _.ClearRequests() = requests <- ConcurrentQueue<_>()
 
   member _.Responses = responses
   member __.Dispose() = __.Stop()
